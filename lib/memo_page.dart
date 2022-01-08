@@ -2,7 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:inbox_memo/setting_page.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 
 import 'models/memo_model.dart';
 
@@ -16,7 +19,6 @@ class MemoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('### MemoPage build ###');
     controller.selection = TextSelection.fromPosition(
       TextPosition(offset: controller.text.length),
     );
@@ -30,14 +32,10 @@ class MemoPage extends StatelessWidget {
               fillColor: Colors.blueGrey[50],
               filled: true,
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.blueGrey[50]!,
-                ),
+                borderSide: BorderSide(color: Colors.blueGrey[50]!),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.blueGrey[50]!,
-                ),
+                borderSide: BorderSide(color: Colors.blueGrey[50]!),
               ),
             ),
             cursorColor: Colors.blueGrey,
@@ -46,7 +44,7 @@ class MemoPage extends StatelessWidget {
             style: const TextStyle(color: Colors.black, fontSize: 16.0),
             autofocus: true,
             onChanged: (text) {
-              Provider.of<MemoModel>(context, listen: false).save(text);
+              context.read<MemoModel>().save(text);
             },
           ),
         ),
@@ -59,22 +57,38 @@ class MemoPage extends StatelessWidget {
             const SizedBox(width: 32), // 左にめり込むのでその対策
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.cog),
-              onPressed: () {
-                // TODO: 設定画面へ遷移
-              },
-            ),
-            const Expanded(child: SizedBox()),
-            FloatingActionButton(
-              child: const Icon(FontAwesomeIcons.shareAlt),
-              onPressed: () {
-                // TODO: 共有
+              onPressed: () async {
+                // 設定画面へ遷移
+                await showBarModalBottomSheet(
+                  context: context,
+                  barrierColor: Colors.black54,
+                  builder: (BuildContext context) => Navigator(
+                    onGenerateRoute: (context) =>
+                        MaterialPageRoute<SettingPage>(
+                      builder: (context) => const SettingPage(),
+                    ),
+                  ),
+                );
               },
             ),
             const SizedBox(width: 16),
             FloatingActionButton(
+              child: const Icon(FontAwesomeIcons.shareAlt),
+              onPressed: () {
+                if (controller.text == '') {
+                  debugPrint('text empty.');
+                  return;
+                }
+                // 共有メニューを表示
+                Share.share(controller.text);
+              },
+            ),
+            const Expanded(child: SizedBox()),
+            FloatingActionButton(
               child: const Icon(FontAwesomeIcons.trash),
               backgroundColor: Colors.red[300],
               onPressed: () {
+                // 入力を全クリア
                 context.read<MemoModel>().clear();
                 controller.clear();
               },

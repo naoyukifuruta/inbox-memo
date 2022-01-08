@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
           themeMode: model.isDark ? ThemeMode.dark : ThemeMode.light,
           debugShowCheckedModeBanner: false,
           home: Consumer<MemoModel>(builder: (context, model, child) {
-            debugPrint('test');
             return MemoPage(initText: model.current);
           }),
         );
