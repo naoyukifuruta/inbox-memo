@@ -34,14 +34,16 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeModel>(builder: (context, model, child) {
-      return MaterialApp(
-        theme: model.getLightThemeData(),
-        darkTheme: model.getDarkThemeData(),
-        themeMode: model.isDark ? ThemeMode.dark : ThemeMode.light,
-        debugShowCheckedModeBanner: false,
-        home: MemoPage(),
-      );
-    });
+    return Consumer<ThemeModel>(
+      builder: (context, model, child) {
+        return MaterialApp(
+          theme: model.getLightThemeData(),
+          darkTheme: model.getDarkThemeData(),
+          themeMode: model.isDark ? ThemeMode.dark : ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          home: MemoPage(),
+        );
+      },
+    );
   }
 }
