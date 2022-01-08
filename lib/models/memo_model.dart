@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MemoModel extends ChangeNotifier {
-  late String _initialText;
-  String get initialText => _initialText;
+  late String _current;
+  String get current => _current;
 
   late SharedPreferences _pref;
 
   MemoModel(SharedPreferences pref) {
     _pref = pref;
-    _initialText = load();
+    _current = load();
   }
 
   String load() {
@@ -18,5 +18,11 @@ class MemoModel extends ChangeNotifier {
 
   void save(String text) {
     _pref.setString('memo', text);
+  }
+
+  void clear() {
+    _current = '';
+    _pref.setString('memo', '');
+    notifyListeners();
   }
 }

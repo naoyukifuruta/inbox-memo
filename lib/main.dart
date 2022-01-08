@@ -41,7 +41,10 @@ class MyApp extends StatelessWidget {
           darkTheme: model.getDarkThemeData(),
           themeMode: model.isDark ? ThemeMode.dark : ThemeMode.light,
           debugShowCheckedModeBanner: false,
-          home: MemoPage(),
+          home: Consumer<MemoModel>(builder: (context, model, child) {
+            debugPrint('test');
+            return MemoPage(initText: model.current);
+          }),
         );
       },
     );
