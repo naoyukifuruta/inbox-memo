@@ -9,21 +9,19 @@ import 'models/memo_model.dart';
 class MemoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    debugPrint(size.height.toString());
-    final int textMaxLines = (size.height / 100).toInt();
-    debugPrint(textMaxLines.toString());
+    final int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
     return Consumer<MemoModel>(
       builder: (context, model, child) {
-        final controller = TextEditingController(text: model.current);
-        controller.selection = TextSelection.fromPosition(
-          TextPosition(offset: controller.text.length),
-        );
+        // final controller = TextEditingController(text: model.current);
+        // controller.selection = TextSelection.fromPosition(
+        //   TextPosition(offset: controller.text.length),
+        // );
         return Scaffold(
           body: SafeArea(
             child: Container(
               padding: const EdgeInsets.all(16.0),
-              child: TextField(
+              child: TextFormField(
+                initialValue: model.initialText,
                 decoration: InputDecoration(
                   fillColor: Colors.blueGrey[50],
                   filled: true,
@@ -39,12 +37,12 @@ class MemoPage extends StatelessWidget {
                   ),
                 ),
                 cursorColor: Colors.blueGrey,
-                controller: controller,
+                //controller: TextEditingController(text: model.current),
                 maxLines: textMaxLines,
                 style: const TextStyle(color: Colors.black, fontSize: 16.0),
                 autofocus: true,
                 onChanged: (text) {
-                  model.current = text;
+                  model.save(text);
                 },
               ),
             ),
@@ -54,15 +52,27 @@ class MemoPage extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                const SizedBox(width: 32), // 左にめり込むのでその対策
                 FloatingActionButton(
-                  child: const Icon(FontAwesomeIcons.trash),
-                  backgroundColor: Colors.red[300],
-                  onPressed: () {},
+                  child: const Icon(FontAwesomeIcons.cog),
+                  onPressed: () {
+                    // TODO: 設定画面へ遷移
+                  },
+                ),
+                const Expanded(child: SizedBox()),
+                FloatingActionButton(
+                  child: const Icon(FontAwesomeIcons.shareAlt),
+                  onPressed: () {
+                    // TODO: 共有
+                  },
                 ),
                 const SizedBox(width: 16),
                 FloatingActionButton(
-                  child: const Icon(FontAwesomeIcons.cog),
-                  onPressed: () {},
+                  child: const Icon(FontAwesomeIcons.trash),
+                  backgroundColor: Colors.red[300],
+                  onPressed: () {
+                    // TODO: 削除処理実装
+                  },
                 ),
               ],
             ),
