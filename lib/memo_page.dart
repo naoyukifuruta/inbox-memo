@@ -61,7 +61,7 @@ class MemoPage extends StatelessWidget {
                 // 設定画面へ遷移
                 await showBarModalBottomSheet(
                   context: context,
-                  barrierColor: Colors.black54,
+                  barrierColor: Colors.transparent,
                   builder: (BuildContext context) => Navigator(
                     onGenerateRoute: (context) =>
                         MaterialPageRoute<SettingPage>(
