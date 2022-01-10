@@ -16,7 +16,7 @@ class MemoPage extends StatelessWidget {
 
   String initText;
   late TextEditingController controller;
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -24,33 +24,34 @@ class MemoPage extends StatelessWidget {
       TextPosition(offset: controller.text.length),
     );
     final int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
+    final isDark = context.read<ThemeModel>().isDark;
     return Scaffold(
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(16.0),
           child: TextFormField(
             decoration: InputDecoration(
-              fillColor: Colors.blueGrey[50],
+              fillColor: isDark ? Colors.grey[800] : Colors.blueGrey[50],
               filled: true,
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueGrey[50]!),
+                borderSide: BorderSide(
+                    color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueGrey[50]!),
+                borderSide: BorderSide(
+                    color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!),
               ),
             ),
-            cursorColor: Colors.blueGrey,
+            cursorColor: isDark ? Colors.indigo[400] : Colors.blueGrey,
             controller: controller,
             maxLines: textMaxLines,
-            style: const TextStyle(color: Colors.black, fontSize: 16.0),
+            style: TextStyle(
+                color: isDark ? Colors.white : Colors.black, fontSize: 16.0),
             autofocus: true,
             focusNode: _focusNode,
             onChanged: (text) {
               context.read<MemoModel>().save(text);
             },
-            // onTap: () {
-            //   _focusNode.requestFocus();
-            // },
           ),
         ),
       ),
@@ -66,7 +67,7 @@ class MemoPage extends StatelessWidget {
                 if (_focusNode.hasFocus) {
                   _focusNode.unfocus();
                 } else {
-                  FocusScope.of(context).unfocus();
+                  // TODO: こっちを通るときにモーダルがキーボードに隠れてしまう
                 }
 
                 await showModalBottomSheet<void>(
@@ -100,7 +101,7 @@ class MemoPage extends StatelessWidget {
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.trash),
               backgroundColor: Colors.red[300],
-              onPressed: () {
+              onPressed: () async {
                 if (controller.text == '') {
                   debugPrint('text empty.');
                   _focusNode.requestFocus();
@@ -108,6 +109,8 @@ class MemoPage extends StatelessWidget {
                 }
                 context.read<MemoModel>().clear();
                 controller.clear();
+
+                _focusNode.requestFocus();
 
                 // TODO: このルート通ったときにキーボードがきえない問題（iOS/Android両方）
               },
