@@ -16,6 +16,7 @@ class MemoPage extends StatelessWidget {
 
   String initText;
   late TextEditingController controller;
+  FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +44,13 @@ class MemoPage extends StatelessWidget {
             maxLines: textMaxLines,
             style: const TextStyle(color: Colors.black, fontSize: 16.0),
             autofocus: true,
+            focusNode: _focusNode,
             onChanged: (text) {
               context.read<MemoModel>().save(text);
             },
+            // onTap: () {
+            //   _focusNode.requestFocus();
+            // },
           ),
         ),
       ),
@@ -58,17 +63,12 @@ class MemoPage extends StatelessWidget {
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.cog),
               onPressed: () async {
-                // 設定画面へ遷移
-                // await showBarModalBottomSheet(
-                //   context: context,
-                //   barrierColor: Colors.transparent,
-                //   builder: (BuildContext context) => Navigator(
-                //     onGenerateRoute: (context) =>
-                //         MaterialPageRoute<SettingPage>(
-                //       builder: (context) => const SettingPage(),
-                //     ),
-                //   ),
-                // );
+                if (_focusNode.hasFocus) {
+                  _focusNode.unfocus();
+                } else {
+                  FocusScope.of(context).unfocus();
+                }
+
                 await showModalBottomSheet<void>(
                   context: context,
                   shape: const RoundedRectangleBorder(
@@ -78,79 +78,22 @@ class MemoPage extends StatelessWidget {
                     ),
                   ),
                   builder: (BuildContext context) {
-                    return Container(
-                      height: 240,
-                      margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Center(
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              height: 5,
-                              width: 32,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Theme.of(context).backgroundColor,
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 24.0),
-                              child: Text(
-                                '設定',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: ListTile(
-                                leading: const SizedBox(
-                                  height: 40,
-                                  child: Icon(FontAwesomeIcons.adjust),
-                                ),
-                                title: const Text('ダークモード'),
-                                subtitle: Text(context.read<ThemeModel>().isDark
-                                    ? 'ON'
-                                    : 'OFF'),
-                                trailing: Switch.adaptive(
-                                  value: context.read<ThemeModel>().isDark,
-                                  onChanged: (_) {
-                                    context.read<ThemeModel>().changeMode();
-                                  },
-                                ),
-                                onTap: null,
-                              ),
-                            ),
-                            const SizedBox(height: 16.0),
-                            OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                ),
-                              ),
-                              child: const Text('キャンセル'),
-                              onPressed: () => Navigator.pop(context, false),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                    return const SettingModalSheet();
                   },
                 );
+                _focusNode.requestFocus();
               },
             ),
             const SizedBox(width: 16),
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.shareAlt),
-              onPressed: () {
+              onPressed: () async {
                 if (controller.text == '') {
                   debugPrint('text empty.');
                   return;
                 }
-                // 共有メニューを表示
-                Share.share(controller.text);
+                _focusNode.unfocus();
+                await Share.share(controller.text);
               },
             ),
             const Expanded(child: SizedBox()),
@@ -158,10 +101,81 @@ class MemoPage extends StatelessWidget {
               child: const Icon(FontAwesomeIcons.trash),
               backgroundColor: Colors.red[300],
               onPressed: () {
-                // 入力を全クリア
+                if (controller.text == '') {
+                  debugPrint('text empty.');
+                  _focusNode.requestFocus();
+                  return;
+                }
                 context.read<MemoModel>().clear();
                 controller.clear();
+
+                // TODO: このルート通ったときにキーボードがきえない問題（iOS/Android両方）
               },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SettingModalSheet extends StatelessWidget {
+  const SettingModalSheet({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 240,
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Center(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 5,
+              width: 32,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).backgroundColor,
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24.0),
+              child: Text(
+                '設定',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: ListTile(
+                leading: const SizedBox(
+                  height: 40,
+                  child: Icon(FontAwesomeIcons.adjust),
+                ),
+                title: const Text('ダークモード'),
+                subtitle:
+                    Text(context.read<ThemeModel>().isDark ? 'ON' : 'OFF'),
+                trailing: Switch.adaptive(
+                  value: context.read<ThemeModel>().isDark,
+                  onChanged: (_) {
+                    context.read<ThemeModel>().changeMode();
+                  },
+                ),
+                onTap: null,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+              ),
+              child: const Text('キャンセル'),
+              onPressed: () => Navigator.pop(context, false),
             ),
           ],
         ),
