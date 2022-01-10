@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.inbox_memo">
    <application
-        android:label="inbox_memo"
+        android:label="Inboxメモ"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
