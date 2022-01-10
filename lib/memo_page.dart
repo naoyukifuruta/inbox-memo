@@ -1,13 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inbox_memo/setting_page.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 import 'models/memo_model.dart';
+import 'models/theme_model.dart';
 
 class MemoPage extends StatelessWidget {
   MemoPage({Key? key, required this.initText}) : super(key: key) {
@@ -59,15 +59,85 @@ class MemoPage extends StatelessWidget {
               child: const Icon(FontAwesomeIcons.cog),
               onPressed: () async {
                 // 設定画面へ遷移
-                await showBarModalBottomSheet(
+                // await showBarModalBottomSheet(
+                //   context: context,
+                //   barrierColor: Colors.transparent,
+                //   builder: (BuildContext context) => Navigator(
+                //     onGenerateRoute: (context) =>
+                //         MaterialPageRoute<SettingPage>(
+                //       builder: (context) => const SettingPage(),
+                //     ),
+                //   ),
+                // );
+                await showModalBottomSheet<void>(
                   context: context,
-                  barrierColor: Colors.transparent,
-                  builder: (BuildContext context) => Navigator(
-                    onGenerateRoute: (context) =>
-                        MaterialPageRoute<SettingPage>(
-                      builder: (context) => const SettingPage(),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
                     ),
                   ),
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 240,
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Center(
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              height: 5,
+                              width: 32,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Theme.of(context).backgroundColor,
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 24.0),
+                              child: Text(
+                                '設定',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: ListTile(
+                                leading: const SizedBox(
+                                  height: 40,
+                                  child: Icon(FontAwesomeIcons.adjust),
+                                ),
+                                title: const Text('ダークモード'),
+                                subtitle: Text(context.read<ThemeModel>().isDark
+                                    ? 'ON'
+                                    : 'OFF'),
+                                trailing: Switch.adaptive(
+                                  value: context.read<ThemeModel>().isDark,
+                                  onChanged: (_) {
+                                    context.read<ThemeModel>().changeMode();
+                                  },
+                                ),
+                                onTap: null,
+                              ),
+                            ),
+                            const SizedBox(height: 16.0),
+                            OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                              ),
+                              child: const Text('キャンセル'),
+                              onPressed: () => Navigator.pop(context, false),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
