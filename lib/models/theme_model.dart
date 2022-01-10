@@ -18,8 +18,6 @@ class ThemeModel extends ChangeNotifier {
       brightness: Brightness.light,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       primarySwatch: Colors.blueGrey,
-      accentColor: Colors.blueGrey, // TODO: deprecated
-      dividerColor: Colors.black,
     );
   }
 
@@ -27,9 +25,6 @@ class ThemeModel extends ChangeNotifier {
     return ThemeData(
       brightness: Brightness.dark,
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      primarySwatch: Colors.pink,
-      accentColor: Colors.pink, // TODO: deprecated
-      dividerColor: Colors.white,
     );
   }
 

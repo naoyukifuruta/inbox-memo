@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MemoModel extends ChangeNotifier {
   late SharedPreferences _pref;
+
   late String _current;
   String get current => _current;
 
