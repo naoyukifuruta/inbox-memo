@@ -9,8 +9,8 @@ import 'package:share/share.dart';
 import 'models/memo_model.dart';
 import 'models/theme_model.dart';
 
-class MemoPage extends StatelessWidget {
-  MemoPage({Key? key, required this.initText}) : super(key: key) {
+class AppPage extends StatelessWidget {
+  AppPage({Key? key, required this.initText}) : super(key: key) {
     controller = TextEditingController(text: initText);
   }
 
