@@ -8,23 +8,31 @@ import 'app.dart';
 import 'models/memo_model.dart';
 import 'models/theme_model.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  final pref = await SharedPreferences.getInstance();
-  final themeModel = ThemeModel(pref);
-  final memoModel = MemoModel(pref);
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider<ThemeModel>(
-          create: (context) => themeModel,
-        ),
-        ChangeNotifierProvider<MemoModel>(
-          create: (context) => memoModel,
-        ),
-      ],
-      child: const App(),
-    ),
-  );
+
+  late final SharedPreferences sp;
+  await Future.wait([
+    Future(() async => sp = await SharedPreferences.getInstance()),
+  ]);
+
+  final themeModel = ThemeModel(sp);
+  final memoModel = MemoModel(sp);
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ThemeModel>(
+            create: (context) => themeModel,
+          ),
+          ChangeNotifierProvider<MemoModel>(
+            create: (context) => memoModel,
+          ),
+        ],
+        child: const App(),
+      ),
+    );
+  });
 }
