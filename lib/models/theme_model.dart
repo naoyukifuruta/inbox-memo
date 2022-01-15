@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeModel extends ChangeNotifier {
-  ThemeModel(SharedPreferences pref) {
-    _init(pref);
-  }
+  late SharedPreferences _pref;
 
   bool get isDark => _isDark;
   bool _isDark = false;
 
-  void _init(SharedPreferences pref) async {
+  ThemeModel(SharedPreferences pref) {
+    _pref = pref;
     _isDark = pref.getBool('isDark') ?? false;
   }
 
@@ -30,8 +29,7 @@ class ThemeModel extends ChangeNotifier {
 
   void changeMode() async {
     _isDark = !_isDark;
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isDark', _isDark);
+    _pref.setBool('isDark', _isDark);
     notifyListeners();
   }
 }
