@@ -6,11 +6,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
+import 'models/app_info_model.dart';
 import 'models/memo_model.dart';
 import 'models/theme_model.dart';
+import 'setting_page.dart';
 
-class AppPage extends StatelessWidget {
-  AppPage({Key? key, required this.initText}) : super(key: key) {
+class MemoPage extends StatelessWidget {
+  MemoPage({Key? key, required this.initText}) : super(key: key) {
     controller = TextEditingController(text: initText);
   }
 
@@ -82,7 +84,6 @@ class AppPage extends StatelessWidget {
                     return const SettingModalSheet();
                   },
                 );
-                _focusNode.requestFocus();
               },
             ),
             const SizedBox(width: 16),
@@ -104,7 +105,6 @@ class AppPage extends StatelessWidget {
               onPressed: () async {
                 if (controller.text == '') {
                   debugPrint('text empty.');
-                  _focusNode.requestFocus();
                   return;
                 }
                 context.read<MemoModel>().clear();
@@ -114,71 +114,6 @@ class AppPage extends StatelessWidget {
 
                 // TODO: このルート通ったときにキーボードがきえない問題（iOS/Android両方）
               },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SettingModalSheet extends StatelessWidget {
-  const SettingModalSheet({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 240,
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Center(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 5,
-              width: 32,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Theme.of(context).backgroundColor,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 24.0),
-              child: Text(
-                '設定',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: ListTile(
-                leading: const SizedBox(
-                  height: 40,
-                  child: Icon(FontAwesomeIcons.adjust),
-                ),
-                title: const Text('ダークモード'),
-                subtitle:
-                    Text(context.read<ThemeModel>().isDark ? 'ON' : 'OFF'),
-                trailing: Switch.adaptive(
-                  value: context.read<ThemeModel>().isDark,
-                  onChanged: (_) {
-                    context.read<ThemeModel>().changeMode();
-                  },
-                ),
-                onTap: null,
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
-                ),
-              ),
-              child: const Text('キャンセル'),
-              onPressed: () => Navigator.pop(context, false),
             ),
           ],
         ),

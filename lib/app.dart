@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'app_page.dart';
+import 'memo_page.dart';
 import 'models/memo_model.dart';
 import 'models/theme_model.dart';
 
@@ -20,7 +20,7 @@ class App extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           home: Consumer<MemoModel>(
             builder: (context, memo, child) {
-              return AppPage(initText: memo.load());
+              return MemoPage(initText: memo.load());
             },
           ),
         );
