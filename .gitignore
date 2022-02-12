@@ -45,4 +45,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-+ **/ios/Flutter/DartDefines.xcconfig
+**/ios/Flutter/DartDefines.xcconfig
