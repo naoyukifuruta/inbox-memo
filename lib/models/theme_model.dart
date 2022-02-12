@@ -27,7 +27,7 @@ class ThemeModel extends ChangeNotifier {
     );
   }
 
-  void changeMode() async {
+  void changeThemeMode() {
     _isDark = !_isDark;
     _pref.setBool('isDark', _isDark);
     notifyListeners();
