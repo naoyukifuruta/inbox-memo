@@ -11,13 +11,14 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const flavor = String.fromEnvironment('FLAVOR');
     return Consumer<ThemeModel>(
       builder: (context, theme, child) {
         return MaterialApp(
           theme: theme.getLightThemeData(),
           darkTheme: theme.getDarkThemeData(),
           themeMode: theme.isDark ? ThemeMode.dark : ThemeMode.light,
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: flavor == 'prd' ? false : true,
           home: Consumer<MemoModel>(
             builder: (context, memo, child) {
               return MemoPage(initText: memo.load());
