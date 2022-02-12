@@ -1,12 +1,14 @@
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
-import 'models/app_info_model.dart';
+import 'models/app_model.dart';
 import 'models/memo_model.dart';
 import 'models/theme_model.dart';
 import 'setting_page.dart';
@@ -66,12 +68,7 @@ class MemoPage extends StatelessWidget {
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.cog),
               onPressed: () async {
-                if (_focusNode.hasFocus) {
-                  _focusNode.unfocus();
-                } else {
-                  // TODO: こっちを通るときにモーダルがキーボードに隠れてしまう
-                }
-
+                _focusNode.unfocus();
                 await showModalBottomSheet<void>(
                   context: context,
                   shape: const RoundedRectangleBorder(
@@ -81,9 +78,10 @@ class MemoPage extends StatelessWidget {
                     ),
                   ),
                   builder: (BuildContext context) {
-                    return const SettingModalSheet();
+                    return const SettingPage();
                   },
                 );
+                FocusScope.of(context).requestFocus(_focusNode);
               },
             ),
             const SizedBox(width: 16),
@@ -107,17 +105,84 @@ class MemoPage extends StatelessWidget {
                   debugPrint('text empty.');
                   return;
                 }
+                _focusNode.unfocus();
+
+                var isConfirm = context.read<MemoModel>().isDeleteConfirm;
+                if (isConfirm) {
+                  var result = await _showDeleteConfirm(
+                      context, '確認', '入力した文字を全削除します。よろしいですか？');
+                  if (!result) {
+                    debugPrint('delete cancel');
+                    FocusScope.of(context).requestFocus(_focusNode);
+                    return;
+                  }
+                }
+
                 context.read<MemoModel>().clear();
                 controller.clear();
 
-                _focusNode.requestFocus();
-
-                // TODO: このルート通ったときにキーボードがきえない問題（iOS/Android両方）
+                FocusScope.of(context).requestFocus(_focusNode);
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<bool> _showDeleteConfirm(
+    BuildContext context,
+    String title,
+    String content,
+  ) async {
+    final result = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return _buildDeleteConfirmDialog(context, title, content);
+      },
+    );
+    return result;
+  }
+
+  Widget _buildDeleteConfirmDialog(
+      BuildContext context, String title, String content) {
+    if (Platform.isIOS) {
+      return CupertinoAlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          CupertinoDialogAction(
+            child: const Text('キャンセル'),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+          CupertinoDialogAction(
+            child: const Text(
+              '削除',
+              style: TextStyle(color: Colors.red),
+            ),
+            onPressed: () => Navigator.pop(context, true),
+          ),
+        ],
+      );
+    } else {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            child: const Text('キャンセル'),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+          TextButton(
+            child: const Text(
+              '削除',
+              style: TextStyle(color: Colors.red),
+            ),
+            onPressed: () => Navigator.pop(context, true),
+          ),
+        ],
+      );
+    }
   }
 }

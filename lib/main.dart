@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:inbox_memo/models/app_info_model.dart';
+import 'package:inbox_memo/models/app_model.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,7 +22,7 @@ Future<void> main() async {
 
   final themeModel = ThemeModel(sp);
   final memoModel = MemoModel(sp);
-  final appInfoModel = AppInfoModel(pi);
+  final appInfoModel = AppModel(pi);
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) {
@@ -35,7 +35,7 @@ Future<void> main() async {
           ChangeNotifierProvider<MemoModel>(
             create: (context) => memoModel,
           ),
-          ChangeNotifierProvider<AppInfoModel>(
+          ChangeNotifierProvider<AppModel>(
             create: (context) => appInfoModel,
           ),
         ],
