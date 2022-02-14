@@ -3,11 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:inbox_memo/models/memo_model.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
-import 'models/app_model.dart';
+import 'models/memo_model.dart';
 import 'models/theme_model.dart';
 
 class SettingPage extends StatelessWidget {
