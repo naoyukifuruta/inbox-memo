@@ -8,11 +8,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
-import 'models/app_model.dart';
 import 'models/memo_model.dart';
 import 'models/theme_model.dart';
 import 'setting_page.dart';
 
+// ignore: must_be_immutable
 class MemoPage extends StatelessWidget {
   MemoPage({Key? key, required this.initText}) : super(key: key) {
     controller = TextEditingController(text: initText);
