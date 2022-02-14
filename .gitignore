@@ -47,3 +47,4 @@ app.*.map.json
 
 **/ios/Flutter/DartDefines.xcconfig
 **/android/app/src/main/res/mipmap*/
+android/app/src/main/res/mipmap-*
