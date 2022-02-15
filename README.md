@@ -1,16 +1,13 @@
-# inbox_memo
+# Inbox memo
 
-A new Flutter project.
+[![Codemagic build status](https://api.codemagic.io/apps/620baadb8c8d2d97499d35ce/620baadb8c8d2d97499d35cd/status_badge.svg)](https://codemagic.io/apps/620baadb8c8d2d97499d35ce/620baadb8c8d2d97499d35cd/latest_build)
 
-## Getting Started
+<p>
+    <img alt="Android" height="300px" src="doc/release/android/screenshot-1644879466728.png">
+    <img alt="Android" height="300px" src="doc/release/android/screenshot-1644879550025.png">
+</p>
 
-This project is a starting point for a Flutter application.
+"とりあえずメモっとく場所"的なアプリが欲しかったので試しに作ったという感じ。
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[Google Play](https://play.google.com/store/apps/details?id=com.nfrutta.inbox_memo)  
+iOS : If I feel like it.
