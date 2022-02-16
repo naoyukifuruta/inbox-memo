@@ -42,7 +42,7 @@ if (project.hasProperty('dart-defines')) {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -59,8 +59,8 @@ android {
 
     defaultConfig {
         applicationId "com.nfrutta.inbox_memo"
-        minSdkVersion 28
-        targetSdkVersion 30
+        minSdkVersion 29
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
