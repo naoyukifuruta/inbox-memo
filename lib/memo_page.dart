@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
@@ -39,18 +37,22 @@ class MemoPage extends StatelessWidget {
               filled: true,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!),
+                  color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!),
+                  color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
+                ),
               ),
             ),
             cursorColor: isDark ? Colors.indigo[400] : Colors.blueGrey,
             controller: controller,
             maxLines: textMaxLines,
             style: TextStyle(
-                color: isDark ? Colors.white : Colors.black, fontSize: 16.0),
+              color: isDark ? Colors.white : Colors.black,
+              fontSize: 16.0,
+            ),
             autofocus: true,
             focusNode: _focusNode,
             onChanged: (text) {
@@ -146,7 +148,10 @@ class MemoPage extends StatelessWidget {
   }
 
   Widget _buildDeleteConfirmDialog(
-      BuildContext context, String title, String content) {
+    BuildContext context,
+    String title,
+    String content,
+  ) {
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: Text(title),

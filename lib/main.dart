@@ -24,23 +24,24 @@ Future<void> main() async {
   final memoModel = MemoModel(sp);
   final appInfoModel = AppModel(pi);
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<ThemeModel>(
-            create: (context) => themeModel,
-          ),
-          ChangeNotifierProvider<MemoModel>(
-            create: (context) => memoModel,
-          ),
-          ChangeNotifierProvider<AppModel>(
-            create: (context) => appInfoModel,
-          ),
-        ],
-        child: const App(),
-      ),
-    );
-  });
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+    (_) {
+      runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ThemeModel>(
+              create: (context) => themeModel,
+            ),
+            ChangeNotifierProvider<MemoModel>(
+              create: (context) => memoModel,
+            ),
+            ChangeNotifierProvider<AppModel>(
+              create: (context) => appInfoModel,
+            ),
+          ],
+          child: const App(),
+        ),
+      );
+    },
+  );
 }
