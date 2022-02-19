@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../providers/shared_preferences_provider.dart';
+import 'shared_preferences_provider.dart';
 
-final themeSelectorProvider = StateNotifierProvider<ThemeSelector, ThemeMode>(
-  (ref) {
-    return ThemeSelector(ref);
-  },
-);
+final themeProvider = StateNotifierProvider<ThemeSelector, ThemeMode>((ref) {
+  return ThemeSelector(ref);
+});
 
 class ThemeSelector extends StateNotifier<ThemeMode> {
   ThemeSelector(this._ref) : super(ThemeMode.light) {
@@ -38,7 +36,7 @@ class ThemeSelector extends StateNotifier<ThemeMode> {
     );
   }
 
-  void changeThemeMode() {
+  void toggleThemeMode() {
     _isDark = !_isDark;
     _pref.setBool('isDark', _isDark);
     state = _isDark ? ThemeMode.dark : ThemeMode.light;
