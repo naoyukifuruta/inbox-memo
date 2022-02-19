@@ -26,7 +26,8 @@ class MemoPage extends ConsumerWidget {
     controller.selection = TextSelection.fromPosition(
       TextPosition(offset: controller.text.length),
     );
-    final int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
+    int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
+    textMaxLines = Platform.isAndroid ? textMaxLines - 1 : textMaxLines;
     final isDark = ref.watch(themeProvider.notifier).isDark;
     final memoObserver = ref.read(memoProvider.notifier);
     return Scaffold(
@@ -64,7 +65,7 @@ class MemoPage extends ConsumerWidget {
         ),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
+        padding: const EdgeInsets.only(bottom: 0.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
