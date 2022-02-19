@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
-import 'package:provider/provider.dart';
 
-import 'models/memo_model.dart';
-import 'models/theme_model.dart';
+import '../providers/app_setting_provider.dart';
+import '../providers/theme_provider.dart';
 
-class SettingPage extends StatelessWidget {
+class SettingPage extends ConsumerWidget {
   const SettingPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeSelector = ref.watch(themeProvider.notifier);
+    final isDeleteConfirm = ref.watch(appSettingProvider).getDeleteConfirm();
     return Container(
       height: 360,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -43,12 +45,11 @@ class SettingPage extends StatelessWidget {
                   child: Icon(FontAwesomeIcons.exclamationTriangle),
                 ),
                 title: const Text('削除時に確認を行う'),
-                subtitle: Text(
-                    context.read<MemoModel>().isDeleteConfirm ? 'ON' : 'OFF'),
+                subtitle: Text(isDeleteConfirm ? 'ON' : 'OFF'),
                 trailing: Switch.adaptive(
-                  value: context.watch<MemoModel>().isDeleteConfirm,
+                  value: isDeleteConfirm,
                   onChanged: (_) {
-                    context.read<MemoModel>().changeDeleteConfirmMode();
+                    ref.read(appSettingProvider).toggleDeleteConfirmMode();
                   },
                 ),
                 onTap: null,
@@ -62,12 +63,11 @@ class SettingPage extends StatelessWidget {
                   child: Icon(FontAwesomeIcons.adjust),
                 ),
                 title: const Text('ダークモード'),
-                subtitle:
-                    Text(context.read<ThemeModel>().isDark ? 'ON' : 'OFF'),
+                subtitle: Text(themeSelector.isDark ? 'ON' : 'OFF'),
                 trailing: Switch.adaptive(
-                  value: context.read<ThemeModel>().isDark,
+                  value: themeSelector.isDark,
                   onChanged: (_) {
-                    context.read<ThemeModel>().changeThemeMode();
+                    themeSelector.toggleThemeMode();
                   },
                 ),
                 onTap: null,
