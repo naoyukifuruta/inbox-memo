@@ -27,7 +27,7 @@ class MemoPage extends ConsumerWidget {
       TextPosition(offset: controller.text.length),
     );
     int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
-    textMaxLines = Platform.isAndroid ? textMaxLines - 1 : textMaxLines;
+    textMaxLines = Platform.isAndroid ? textMaxLines - 1 : textMaxLines + 1;
     final isDark = ref.watch(themeProvider.notifier).isDark;
     final memoObserver = ref.read(memoProvider.notifier);
     return Scaffold(
