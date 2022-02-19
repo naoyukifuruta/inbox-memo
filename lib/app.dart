@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'memo_page.dart';
 import 'models/memo_observer.dart';
 import 'models/theme_selector.dart';
+import 'pages/memo_page.dart';
 
 class App extends ConsumerWidget {
   const App({Key? key}) : super(key: key);

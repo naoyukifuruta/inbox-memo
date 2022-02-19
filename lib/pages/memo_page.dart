@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share/share.dart';
 
-import 'models/memo_observer.dart';
-import 'models/theme_selector.dart';
+import '../models/memo_observer.dart';
+import '../models/theme_selector.dart';
 import 'setting_page.dart';
 
 // ignore: must_be_immutable
