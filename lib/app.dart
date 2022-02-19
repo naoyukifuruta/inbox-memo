@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'memo_page.dart';
-import 'models/memo_model.dart';
-import 'models/theme_model.dart';
+import 'models/memo_observer.dart';
+import 'models/theme_selector.dart';
 
-class App extends StatelessWidget {
+class App extends ConsumerWidget {
   const App({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     const flavor = String.fromEnvironment('FLAVOR');
-    return Consumer<ThemeModel>(
-      builder: (context, theme, child) {
-        return MaterialApp(
-          theme: theme.getLightThemeData(),
-          darkTheme: theme.getDarkThemeData(),
-          themeMode: theme.isDark ? ThemeMode.dark : ThemeMode.light,
-          debugShowCheckedModeBanner: flavor == 'prd' ? false : true,
-          home: Consumer<MemoModel>(
-            builder: (context, memo, child) {
-              return MemoPage(initText: memo.load());
-            },
-          ),
-        );
-      },
+    final themeSelector = ref.watch(themeSelectorProvider.notifier);
+    final currentThemeMode = ref.watch(themeSelectorProvider);
+    final memo = ref.read(memoProvider);
+    return MaterialApp(
+      theme: themeSelector.getLightThemeData(),
+      darkTheme: themeSelector.getDarkThemeData(),
+      themeMode: currentThemeMode,
+      debugShowCheckedModeBanner: flavor == 'prd' ? false : true,
+      home: MemoPage(initText: memo),
     );
   }
 }
