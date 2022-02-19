@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
-import 'models/memo_model.dart';
-import 'models/theme_model.dart';
+import 'models/memo_observer.dart';
+import 'models/theme_selector.dart';
 import 'setting_page.dart';
 
 // ignore: must_be_immutable
-class MemoPage extends StatelessWidget {
+class MemoPage extends ConsumerWidget {
   MemoPage({Key? key, required this.initText}) : super(key: key) {
     controller = TextEditingController(text: initText);
   }
@@ -21,12 +21,13 @@ class MemoPage extends StatelessWidget {
   final FocusNode _focusNode = FocusNode();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     controller.selection = TextSelection.fromPosition(
       TextPosition(offset: controller.text.length),
     );
     final int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
-    final isDark = context.read<ThemeModel>().isDark;
+    final isDark = ref.watch(themeSelectorProvider.notifier).isDark;
+    final memoObserver = ref.read(memoProvider.notifier);
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -56,7 +57,7 @@ class MemoPage extends StatelessWidget {
             autofocus: true,
             focusNode: _focusNode,
             onChanged: (text) {
-              context.read<MemoModel>().save(text);
+              memoObserver.save(text);
             },
           ),
         ),
@@ -109,7 +110,7 @@ class MemoPage extends StatelessWidget {
                 }
                 _focusNode.unfocus();
 
-                var isConfirm = context.read<MemoModel>().isDeleteConfirm;
+                var isConfirm = memoObserver.isDeleteConfirm;
                 if (isConfirm) {
                   var result = await _showDeleteConfirm(
                       context, '確認', '入力した文字を全削除します。よろしいですか？');
@@ -120,7 +121,7 @@ class MemoPage extends StatelessWidget {
                   }
                 }
 
-                context.read<MemoModel>().clear();
+                memoObserver.clear();
                 controller.clear();
 
                 FocusScope.of(context).requestFocus(_focusNode);

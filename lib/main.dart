@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:inbox_memo/models/app_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info/package_info.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
-import 'models/memo_model.dart';
-import 'models/theme_model.dart';
+import 'providers/package_info_provider.dart';
+import 'providers/shared_preferences_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,24 +19,13 @@ Future<void> main() async {
     Future(() async => pi = await PackageInfo.fromPlatform()),
   ]);
 
-  final themeModel = ThemeModel(sp);
-  final memoModel = MemoModel(sp);
-  final appInfoModel = AppModel(pi);
-
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
     (_) {
       runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider<ThemeModel>(
-              create: (context) => themeModel,
-            ),
-            ChangeNotifierProvider<MemoModel>(
-              create: (context) => memoModel,
-            ),
-            ChangeNotifierProvider<AppModel>(
-              create: (context) => appInfoModel,
-            ),
+        ProviderScope(
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(sp),
+            packageInfoProvider.overrideWithValue(pi),
           ],
           child: const App(),
         ),
