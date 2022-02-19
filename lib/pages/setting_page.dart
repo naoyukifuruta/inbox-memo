@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info/package_info.dart';
 
-import '../models/memo_observer.dart';
-import '../models/theme_selector.dart';
+import '../providers/app_setting_provider.dart';
+import '../providers/theme_provider.dart';
 
 class SettingPage extends ConsumerWidget {
   const SettingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeSelector = ref.watch(themeSelectorProvider.notifier);
-    final memoObserver = ref.watch(memoProvider.notifier);
+    final themeSelector = ref.watch(themeProvider.notifier);
+    final isDeleteConfirm = ref.watch(appSettingProvider).getDeleteConfirm();
     return Container(
       height: 360,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -45,11 +45,11 @@ class SettingPage extends ConsumerWidget {
                   child: Icon(FontAwesomeIcons.exclamationTriangle),
                 ),
                 title: const Text('削除時に確認を行う'),
-                subtitle: Text(memoObserver.isDeleteConfirm ? 'ON' : 'OFF'),
+                subtitle: Text(isDeleteConfirm ? 'ON' : 'OFF'),
                 trailing: Switch.adaptive(
-                  value: memoObserver.isDeleteConfirm,
+                  value: isDeleteConfirm,
                   onChanged: (_) {
-                    memoObserver.changeDeleteConfirmMode();
+                    ref.read(appSettingProvider).toggleDeleteConfirmMode();
                   },
                 ),
                 onTap: null,
@@ -67,7 +67,7 @@ class SettingPage extends ConsumerWidget {
                 trailing: Switch.adaptive(
                   value: themeSelector.isDark,
                   onChanged: (_) {
-                    themeSelector.changeThemeMode();
+                    themeSelector.toggleThemeMode();
                   },
                 ),
                 onTap: null,

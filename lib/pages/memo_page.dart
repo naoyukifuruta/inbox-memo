@@ -4,10 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:inbox_memo/providers/app_setting_provider.dart';
 import 'package:share/share.dart';
 
-import '../models/memo_observer.dart';
-import '../models/theme_selector.dart';
+import '../providers/memo_provider.dart';
+import '../providers/theme_provider.dart';
 import 'setting_page.dart';
 
 // ignore: must_be_immutable
@@ -26,7 +27,7 @@ class MemoPage extends ConsumerWidget {
       TextPosition(offset: controller.text.length),
     );
     final int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
-    final isDark = ref.watch(themeSelectorProvider.notifier).isDark;
+    final isDark = ref.watch(themeProvider.notifier).isDark;
     final memoObserver = ref.read(memoProvider.notifier);
     return Scaffold(
       body: SafeArea(
@@ -110,8 +111,7 @@ class MemoPage extends ConsumerWidget {
                 }
                 _focusNode.unfocus();
 
-                var isConfirm = memoObserver.isDeleteConfirm;
-                if (isConfirm) {
+                if (ref.read(appSettingProvider).getDeleteConfirm()) {
                   var result = await _showDeleteConfirm(
                       context, '確認', '入力した文字を全削除します。よろしいですか？');
                   if (!result) {
