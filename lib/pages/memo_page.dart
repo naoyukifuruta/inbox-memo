@@ -11,18 +11,26 @@ import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
 import 'setting_page.dart';
 
-// ignore: must_be_immutable
-class MemoPage extends ConsumerWidget {
-  MemoPage({Key? key, required this.initText}) : super(key: key) {
-    controller = TextEditingController(text: initText);
-  }
+class MemoPage extends ConsumerStatefulWidget {
+  const MemoPage({Key? key}) : super(key: key);
 
-  String initText;
+  @override
+  MemoPageState createState() => MemoPageState();
+}
+
+class MemoPageState extends ConsumerState<MemoPage> {
   late TextEditingController controller;
   final FocusNode _focusNode = FocusNode();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    var initText = ref.read(memoProvider);
+    controller = TextEditingController(text: initText);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     controller.selection = TextSelection.fromPosition(
       TextPosition(offset: controller.text.length),
     );
@@ -70,6 +78,7 @@ class MemoPage extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(width: 32), // 左にめり込むのでその対策
+            // 設定ボタン
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.cog),
               onPressed: () async {
@@ -90,6 +99,7 @@ class MemoPage extends ConsumerWidget {
               },
             ),
             const SizedBox(width: 16),
+            // 共有ボタン
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.shareAlt),
               onPressed: () async {
@@ -102,6 +112,7 @@ class MemoPage extends ConsumerWidget {
               },
             ),
             const Expanded(child: SizedBox()),
+            // メモ削除ボタン
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.trash),
               backgroundColor: Colors.red[300],
@@ -110,6 +121,7 @@ class MemoPage extends ConsumerWidget {
                   debugPrint('text empty.');
                   return;
                 }
+
                 _focusNode.unfocus();
 
                 if (ref.read(appSettingProvider).getDeleteConfirm()) {
