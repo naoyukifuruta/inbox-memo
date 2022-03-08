@@ -8,12 +8,11 @@ final memoProvider = StateNotifierProvider<MemoObserver, String>((ref) {
 });
 
 class MemoObserver extends StateNotifier<String> {
-  MemoObserver(this._ref) : super('') {
-    _pref = _ref.read(sharedPreferencesProvider);
+  MemoObserver(Ref ref) : super('') {
+    _pref = ref.read(sharedPreferencesProvider);
     state = _pref.getString('memo') ?? '';
   }
 
-  final Ref _ref;
   late final SharedPreferences _pref;
 
   late String _current;
