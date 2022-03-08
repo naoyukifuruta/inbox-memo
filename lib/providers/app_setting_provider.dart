@@ -9,22 +9,19 @@ final appSettingProvider = ChangeNotifierProvider<AppSettingNotifier>((ref) {
 });
 
 class AppSettingNotifier extends ChangeNotifier {
-  AppSettingNotifier(this._ref) {
-    _pref = _ref.watch(sharedPreferencesProvider);
+  AppSettingNotifier(Ref ref) {
+    _pref = ref.watch(sharedPreferencesProvider);
+    _isDeleteConfirm = _pref.getBool('isDeleteConfirm') ?? false;
   }
 
-  final Ref _ref;
   late final SharedPreferences _pref;
 
-  final String _prefKeyDeleteConfirm = 'isDeleteConfirm';
+  late bool _isDeleteConfirm;
+  bool get isDeleteConfirm => _isDeleteConfirm;
 
-  bool getDeleteConfirm() {
-    return _pref.getBool(_prefKeyDeleteConfirm) ?? false;
-  }
-
-  void toggleDeleteConfirmMode() {
-    var setValue = !getDeleteConfirm();
-    _pref.setBool(_prefKeyDeleteConfirm, setValue);
+  void toggleDeleteConfirm() {
+    _isDeleteConfirm = !_isDeleteConfirm;
+    _pref.setBool('isDeleteConfirm', _isDeleteConfirm);
     notifyListeners();
   }
 }

@@ -124,9 +124,9 @@ class MemoPageState extends ConsumerState<MemoPage> {
 
                 _focusNode.unfocus();
 
-                if (ref.read(appSettingProvider).getDeleteConfirm()) {
+                if (ref.read(appSettingProvider).isDeleteConfirm) {
                   var result = await _showDeleteConfirm(
-                      context, '確認', '入力した文字を全削除します。よろしいですか？');
+                      context, 'メモを削除', '入力を全て削除します。よろしいですか？');
                   if (!result) {
                     debugPrint('delete cancel');
                     FocusScope.of(context).requestFocus(_focusNode);

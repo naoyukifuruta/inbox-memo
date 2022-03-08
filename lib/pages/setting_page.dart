@@ -12,7 +12,7 @@ class SettingPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeSelector = ref.watch(themeProvider.notifier);
-    final isDeleteConfirm = ref.watch(appSettingProvider).getDeleteConfirm();
+    final appSetting = ref.watch(appSettingProvider);
     return Container(
       height: 360,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -45,11 +45,11 @@ class SettingPage extends ConsumerWidget {
                   child: Icon(FontAwesomeIcons.exclamationTriangle),
                 ),
                 title: const Text('削除時に確認を行う'),
-                subtitle: Text(isDeleteConfirm ? 'ON' : 'OFF'),
+                subtitle: Text(appSetting.isDeleteConfirm ? 'ON' : 'OFF'),
                 trailing: Switch.adaptive(
-                  value: isDeleteConfirm,
+                  value: appSetting.isDeleteConfirm,
                   onChanged: (_) {
-                    ref.read(appSettingProvider).toggleDeleteConfirmMode();
+                    appSetting.toggleDeleteConfirm();
                   },
                 ),
                 onTap: null,
