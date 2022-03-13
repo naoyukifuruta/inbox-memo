@@ -1,0 +1,107 @@
+name: Flutter CI
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - master
+
+jobs:
+  lint:
+    name: flutter analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: set up repository
+        uses: actions/checkout@v2
+      - name: set up java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11.x"
+      - name: set up flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: "2.10.1"
+      - name: flutter pub get
+        run: flutter pub get
+      - name: flutter analyze
+        run: flutter analyze > flutter_analyze_report.txt
+      - name: setup ruby
+        if: ${{ failure() }}
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: "2.6"
+      - name: setup danger
+        if: ${{ failure() }}
+        run: |
+          gem install bundler
+          bundle install
+      - name: execute danger
+        if: ${{ failure() }}
+        uses: MeilCli/danger-action@v5
+        with:
+          plugins_file: "Gemfile"
+          install_path: "vendor/bundle"
+          danger_file: "Dangerfile"
+          danger_id: "danger-pr"
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  android:
+    name: build android
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: set up repository
+        uses: actions/checkout@v2
+      - name: set up java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11.x"
+      - name: set up flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: "2.10.1"
+      - name: flutter pub get
+        run: flutter pub get
+      - name: flutter build
+        run: flutter build appbundle --debug --dart-define=FLAVOR=dev
+
+  ios:
+    name: build ios
+    runs-on: macos-latest
+    needs: lint
+    steps:
+      - name: set up repository
+        uses: actions/checkout@v2
+      - name: set up flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: "2.10.1"
+      - name: flutter pub get
+        run: flutter pub get
+      - name: flutter build
+        run: flutter build ios --debug --no-codesign --dart-define=FLAVOR=dev
+
+  # TODO:
+  # test:
+  #   name: flutter test
+  #   needs: [android, ios]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: set up repository
+  #       uses: actions/checkout@v2
+  #     - name: set up java
+  #       uses: actions/setup-java@v1
+  #       with:
+  #         java-version: "12.x"
+  #     - name: set up flutter
+  #       uses: subosito/flutter-action@v1
+  #       with:
+  #         flutter-version: "2.10.1"
+  #     - name: flutter pub get
+  #       run: flutter pub get
+  #     - name: flutter widget test
+  #       run: flutter test test/widget_test.dart
+  #     - name: flutter unit test
+  #       run: flutter test test/unit_test.dart
