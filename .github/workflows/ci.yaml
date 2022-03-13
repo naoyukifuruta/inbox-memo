@@ -65,7 +65,7 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
       - name: flutter build
-        run: flutter build appbundle --debug
+        run: flutter build appbundle --debug --dart-define=FLAVOR=dev
 
   ios:
     name: build ios
@@ -81,7 +81,7 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
       - name: flutter build
-        run: flutter build ios --debug --no-codesign
+        run: flutter build ios --debug --no-codesign --dart-define=FLAVOR=dev
 
   # TODO:
   # test:
