@@ -1,25 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final flavorProvider = ChangeNotifierProvider<FlavorNotifier>((ref) {
-  const flavor = String.fromEnvironment('FLAVOR');
-  return FlavorNotifier(flavor);
-});
+final flavorProvider = Provider<Flavor>((ref) => throw UnimplementedError());
 
-class FlavorNotifier extends ChangeNotifier {
-  FlavorNotifier(this._flavor);
+enum Flavor {
+  /// Development.
+  dev,
 
-  final String _flavor;
+  /// Staging.
+  stg,
 
-  bool isProduction() {
-    return _flavor == 'prd';
-  }
-
-  String getFlavor() {
-    return _flavor;
-  }
-
-  bool showDebugBanner() {
-    return isProduction() ? false : true;
-  }
+  /// Production.
+  prd,
 }
