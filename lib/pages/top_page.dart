@@ -11,14 +11,14 @@ import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
 import 'setting_page.dart';
 
-class MemoPage extends ConsumerStatefulWidget {
-  const MemoPage({Key? key}) : super(key: key);
+class TopPage extends ConsumerStatefulWidget {
+  const TopPage({Key? key}) : super(key: key);
 
   @override
-  MemoPageState createState() => MemoPageState();
+  TopPageState createState() => TopPageState();
 }
 
-class MemoPageState extends ConsumerState<MemoPage> {
+class TopPageState extends ConsumerState<TopPage> {
   late TextEditingController controller;
   final FocusNode _focusNode = FocusNode();
 
@@ -37,7 +37,7 @@ class MemoPageState extends ConsumerState<MemoPage> {
     int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
     textMaxLines = Platform.isAndroid ? textMaxLines - 1 : textMaxLines + 1;
     final isDark = ref.watch(themeProvider.notifier).isDark;
-    final memoObserver = ref.read(memoProvider.notifier);
+    final memoNotifier = ref.read(memoProvider.notifier);
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -67,7 +67,7 @@ class MemoPageState extends ConsumerState<MemoPage> {
             autofocus: true,
             focusNode: _focusNode,
             onChanged: (text) {
-              memoObserver.save(text);
+              memoNotifier.save(text);
             },
           ),
         ),
@@ -134,7 +134,7 @@ class MemoPageState extends ConsumerState<MemoPage> {
                   }
                 }
 
-                memoObserver.clear();
+                memoNotifier.clear();
                 controller.clear();
 
                 FocusScope.of(context).requestFocus(_focusNode);

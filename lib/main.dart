@@ -13,14 +13,14 @@ import 'providers/shared_preferences_provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  const flavor = String.fromEnvironment('FLAVOR');
-
   late final SharedPreferences sp;
   late final PackageInfo pi;
   await Future.wait([
     Future(() async => sp = await SharedPreferences.getInstance()),
     Future(() async => pi = await PackageInfo.fromPlatform()),
   ]);
+
+  const flavor = String.fromEnvironment('FLAVOR');
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
     (_) {
