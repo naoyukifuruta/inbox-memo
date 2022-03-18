@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
+import 'package:inbox_memo/providers/flavor_provoder.dart';
 import 'package:share/share.dart';
 
 import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
+import '../utils/logger.dart';
 import 'setting_page.dart';
 
 class TopPage extends ConsumerStatefulWidget {
@@ -21,12 +23,14 @@ class TopPage extends ConsumerStatefulWidget {
 class TopPageState extends ConsumerState<TopPage> {
   late TextEditingController controller;
   final FocusNode _focusNode = FocusNode();
+  late Logger _logger;
 
   @override
   void initState() {
     super.initState();
     var initText = ref.read(memoProvider);
     controller = TextEditingController(text: initText);
+    _logger = Logger(ref.read(flavorProvider));
   }
 
   @override
@@ -82,6 +86,7 @@ class TopPageState extends ConsumerState<TopPage> {
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.cog),
               onPressed: () async {
+                _logger.debug();
                 _focusNode.unfocus();
                 await showModalBottomSheet<void>(
                   context: context,
