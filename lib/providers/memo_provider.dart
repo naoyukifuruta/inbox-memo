@@ -3,12 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'shared_preferences_provider.dart';
 
-final memoProvider = StateNotifierProvider<MemoObserver, String>((ref) {
-  return MemoObserver(ref);
+final memoProvider = StateNotifierProvider<MemoNotifier, String>((ref) {
+  return MemoNotifier(ref);
 });
 
-class MemoObserver extends StateNotifier<String> {
-  MemoObserver(Ref ref) : super('') {
+class MemoNotifier extends StateNotifier<String> {
+  MemoNotifier(Ref ref) : super('') {
     _pref = ref.read(sharedPreferencesProvider);
     state = _pref.getString('memo') ?? '';
   }
