@@ -10,14 +10,12 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeSelector = ref.watch(themeProvider.notifier);
-    final currentThemeMode = ref.watch(themeProvider);
-    final flavor = ref.read(flavorProvider);
     return MaterialApp(
-      theme: themeSelector.getLightThemeData(),
-      darkTheme: themeSelector.getDarkThemeData(),
-      themeMode: currentThemeMode,
-      debugShowCheckedModeBanner: flavor == Flavor.prd ? false : true,
+      theme: ref.watch(themeProvider.notifier).getLightThemeData(),
+      darkTheme: ref.watch(themeProvider.notifier).getDarkThemeData(),
+      themeMode: ref.watch(themeProvider),
+      debugShowCheckedModeBanner:
+          ref.read(flavorProvider) == Flavor.prd ? false : true,
       home: const TopPage(),
     );
   }
