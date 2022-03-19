@@ -23,14 +23,14 @@ class TopPage extends ConsumerStatefulWidget {
 class TopPageState extends ConsumerState<TopPage> {
   late TextEditingController controller;
   final FocusNode _focusNode = FocusNode();
-  late Logger _logger;
+  final Logger _logger = Logger();
 
   @override
   void initState() {
     super.initState();
     var initText = ref.read(memoProvider);
     controller = TextEditingController(text: initText);
-    _logger = Logger(ref.read(flavorProvider));
+    _logger.setFlavor(ref.read(flavorProvider));
   }
 
   @override
@@ -86,7 +86,7 @@ class TopPageState extends ConsumerState<TopPage> {
             FloatingActionButton(
               child: const Icon(FontAwesomeIcons.cog),
               onPressed: () async {
-                _logger.debug();
+                _logger.debug('onPressed setting button');
                 _focusNode.unfocus();
                 await showModalBottomSheet<void>(
                   context: context,
@@ -109,7 +109,7 @@ class TopPageState extends ConsumerState<TopPage> {
               child: const Icon(FontAwesomeIcons.shareAlt),
               onPressed: () async {
                 if (controller.text == '') {
-                  debugPrint('text empty.');
+                  _logger.debug('text empty.');
                   return;
                 }
                 _focusNode.unfocus();
@@ -122,6 +122,7 @@ class TopPageState extends ConsumerState<TopPage> {
               child: const Icon(FontAwesomeIcons.trash),
               backgroundColor: Colors.red[300],
               onPressed: () async {
+                _logger.debug('');
                 if (controller.text == '') {
                   debugPrint('text empty.');
                   return;

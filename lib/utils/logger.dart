@@ -1,53 +1,79 @@
-import 'package:inbox_memo/providers/flavor_provoder.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:stack_trace/stack_trace.dart' show Trace;
+import 'package:stack_trace/stack_trace.dart';
+import '../providers/flavor_provoder.dart';
 
 enum LogLevel {
   debug,
   info,
-  warn,
+  warning,
   error,
 }
 
 class Logger {
-  Logger(this._flavor);
+  factory Logger() => _singleton;
+  Logger._();
+  static final _singleton = Logger._();
 
-  final Flavor _flavor;
+  var _flavor = Flavor.prd;
 
-  void debug({String message = ''}) {
-    if (_flavor == Flavor.prd) return;
+  void setFlavor(Flavor flavor) {
+    _flavor = flavor;
+  }
+
+  void debug(String message) {
+    if (_flavor == Flavor.prd) {
+      // リリースビルド時はログを出さない
+      return;
+    }
+
     const level = 1;
     final frames = Trace.current(level).frames;
     final frame = frames.isEmpty ? null : frames.first;
-    _output(LogLevel.debug, '$frame $message');
+
+    _output(LogLevel.debug, message, frame);
   }
 
-  void info({String message = ''}) {
+  void info(String message) {
+    if (_flavor == Flavor.prd) {
+      return;
+    }
+
     const level = 1;
     final frames = Trace.current(level).frames;
     final frame = frames.isEmpty ? null : frames.first;
-    _output(LogLevel.info, '$frame $message');
+
+    _output(LogLevel.info, message, frame);
   }
 
-  void warning({String message = ''}) {
+  void warning(String message) {
+    if (_flavor == Flavor.prd) {
+      return;
+    }
+
     const level = 1;
     final frames = Trace.current(level).frames;
     final frame = frames.isEmpty ? null : frames.first;
-    _output(LogLevel.warn, '$frame $message');
+
+    _output(LogLevel.warning, message, frame);
   }
 
-  void error({String message = ''}) {
+  void error(String message) {
+    if (_flavor == Flavor.prd) {
+      return;
+    }
+
     const level = 1;
     final frames = Trace.current(level).frames;
     final frame = frames.isEmpty ? null : frames.first;
-    _output(LogLevel.error, '$frame $message');
+
+    _output(LogLevel.error, message, frame);
   }
 
-  void _output(LogLevel logLevel, String logMessage) {
-    final String nowDateString =
+  void _output(LogLevel logLevel, String logMessage, Frame? frame) {
+    final nowDateString =
         DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
-    final String logLevelString =
-        logLevel.toString().split('.')[1].toUpperCase();
-    print('[$nowDateString][$logLevelString] $logMessage');
+    final logLevelString = logLevel.toString().split('.')[1].toUpperCase();
+    debugPrint('👻 $logLevelString $nowDateString [$frame] $logMessage');
   }
 }
