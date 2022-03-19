@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
-import 'package:inbox_memo/providers/flavor_provoder.dart';
+import 'package:inbox_memo/providers/logger_provider.dart';
 import 'package:share/share.dart';
 
 import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
-import '../utils/logger.dart';
 import 'setting_page.dart';
 
 class TopPage extends ConsumerStatefulWidget {
@@ -21,133 +20,171 @@ class TopPage extends ConsumerStatefulWidget {
 }
 
 class TopPageState extends ConsumerState<TopPage> {
-  late TextEditingController controller;
+  late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
-  final Logger _logger = Logger();
 
   @override
   void initState() {
     super.initState();
-    var initText = ref.read(memoProvider);
-    controller = TextEditingController(text: initText);
-    _logger.setFlavor(ref.read(flavorProvider));
+    final initText = ref.read(memoProvider);
+    _controller = TextEditingController(text: initText);
   }
 
   @override
   Widget build(BuildContext context) {
-    controller.selection = TextSelection.fromPosition(
-      TextPosition(offset: controller.text.length),
+    _controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: _controller.text.length),
     );
-    int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
-    textMaxLines = Platform.isAndroid ? textMaxLines - 1 : textMaxLines + 1;
-    final isDark = ref.watch(themeProvider.notifier).isDark;
-    final memoNotifier = ref.read(memoProvider.notifier);
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: TextFormField(
-            decoration: InputDecoration(
-              fillColor: isDark ? Colors.grey[800] : Colors.blueGrey[50],
-              filled: true,
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
-                ),
+      body: _Body(
+        controller: _controller,
+        focusNode: _focusNode,
+      ),
+      floatingActionButton: _FloatingActionButtons(
+        controller: _controller,
+        focusNode: _focusNode,
+      ),
+    );
+  }
+}
+
+class _Body extends ConsumerWidget {
+  const _Body({
+    Key? key,
+    required this.controller,
+    required this.focusNode,
+  }) : super(key: key);
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(themeProvider.notifier).isDark;
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: TextFormField(
+          decoration: InputDecoration(
+            fillColor: isDark ? Colors.grey[800] : Colors.blueGrey[50],
+            filled: true,
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
               ),
             ),
-            cursorColor: isDark ? Colors.indigo[400] : Colors.blueGrey,
-            controller: controller,
-            maxLines: textMaxLines,
-            style: TextStyle(
-              color: isDark ? Colors.white : Colors.black,
-              fontSize: 16.0,
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
+              ),
             ),
-            autofocus: true,
-            focusNode: _focusNode,
-            onChanged: (text) {
-              memoNotifier.save(text);
-            },
           ),
+          cursorColor: isDark ? Colors.indigo[400] : Colors.blueGrey,
+          controller: controller,
+          maxLines: _getTextMaxLines(context),
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontSize: 16.0,
+          ),
+          autofocus: true,
+          focusNode: focusNode,
+          onChanged: (text) {
+            ref.read(memoProvider.notifier).save(text);
+          },
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 0.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(width: 32), // 左にめり込むのでその対策
-            // 設定ボタン
-            FloatingActionButton(
-              child: const Icon(FontAwesomeIcons.cog),
-              onPressed: () async {
-                _logger.debug('onPressed setting button');
-                _focusNode.unfocus();
-                await showModalBottomSheet<void>(
-                  context: context,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                    ),
+    );
+  }
+
+  int _getTextMaxLines(BuildContext context) {
+    final int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
+    return Platform.isAndroid ? textMaxLines - 1 : textMaxLines + 1;
+  }
+}
+
+class _FloatingActionButtons extends ConsumerWidget {
+  const _FloatingActionButtons({
+    Key? key,
+    required this.controller,
+    required this.focusNode,
+  }) : super(key: key);
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 0.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(width: 32), // 左にめり込むのでその対策
+          // 設定ボタン
+          FloatingActionButton(
+            child: const Icon(FontAwesomeIcons.cog),
+            onPressed: () async {
+              ref.read(loggerProvider).debug('onPressed setting button');
+              focusNode.unfocus();
+              await showModalBottomSheet<void>(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
                   ),
-                  builder: (BuildContext context) {
-                    return const SettingPage();
-                  },
-                );
-                FocusScope.of(context).requestFocus(_focusNode);
-              },
-            ),
-            const SizedBox(width: 16),
-            // 共有ボタン
-            FloatingActionButton(
-              child: const Icon(FontAwesomeIcons.shareAlt),
-              onPressed: () async {
-                if (controller.text == '') {
-                  _logger.debug('text empty.');
+                ),
+                builder: (BuildContext context) {
+                  return const SettingPage();
+                },
+              );
+              FocusScope.of(context).requestFocus(focusNode);
+            },
+          ),
+          const SizedBox(width: 16),
+          // 共有ボタン
+          FloatingActionButton(
+            child: const Icon(FontAwesomeIcons.shareAlt),
+            onPressed: () async {
+              if (controller.text == '') {
+                ref.read(loggerProvider).debug('text empty.');
+                return;
+              }
+              focusNode.unfocus();
+              await Share.share(controller.text);
+            },
+          ),
+          const Expanded(child: SizedBox()),
+          // メモ削除ボタン
+          FloatingActionButton(
+            child: const Icon(FontAwesomeIcons.trash),
+            backgroundColor: Colors.red[300],
+            onPressed: () async {
+              ref.read(loggerProvider).debug('');
+              if (controller.text == '') {
+                debugPrint('text empty.');
+                return;
+              }
+
+              focusNode.unfocus();
+
+              if (ref.read(appSettingProvider).isDeleteConfirm) {
+                var result = await _showDeleteConfirm(
+                    context, 'メモを削除', '入力を全て削除します。よろしいですか？');
+                if (!result) {
+                  debugPrint('delete cancel');
+                  FocusScope.of(context).requestFocus(focusNode);
                   return;
                 }
-                _focusNode.unfocus();
-                await Share.share(controller.text);
-              },
-            ),
-            const Expanded(child: SizedBox()),
-            // メモ削除ボタン
-            FloatingActionButton(
-              child: const Icon(FontAwesomeIcons.trash),
-              backgroundColor: Colors.red[300],
-              onPressed: () async {
-                _logger.debug('');
-                if (controller.text == '') {
-                  debugPrint('text empty.');
-                  return;
-                }
+              }
 
-                _focusNode.unfocus();
+              ref.read(memoProvider.notifier).clear();
+              controller.clear();
 
-                if (ref.read(appSettingProvider).isDeleteConfirm) {
-                  var result = await _showDeleteConfirm(
-                      context, 'メモを削除', '入力を全て削除します。よろしいですか？');
-                  if (!result) {
-                    debugPrint('delete cancel');
-                    FocusScope.of(context).requestFocus(_focusNode);
-                    return;
-                  }
-                }
-
-                memoNotifier.clear();
-                controller.clear();
-
-                FocusScope.of(context).requestFocus(_focusNode);
-              },
-            ),
-          ],
-        ),
+              FocusScope.of(context).requestFocus(focusNode);
+            },
+          ),
+        ],
       ),
     );
   }
