@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,6 +9,7 @@ import 'package:share/share.dart';
 
 import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
+import '../utils/dialog_util.dart';
 import 'setting_page.dart';
 
 class TopPage extends ConsumerStatefulWidget {
@@ -124,7 +124,6 @@ class _FloatingActionButtons extends ConsumerWidget {
           FloatingActionButton(
             child: const Icon(FontAwesomeIcons.cog),
             onPressed: () async {
-              ref.read(loggerProvider).debug('onPressed setting button');
               focusNode.unfocus();
               await showModalBottomSheet<void>(
                 context: context,
@@ -147,7 +146,7 @@ class _FloatingActionButtons extends ConsumerWidget {
             child: const Icon(FontAwesomeIcons.shareAlt),
             onPressed: () async {
               if (controller.text == '') {
-                ref.read(loggerProvider).debug('text empty.');
+                ref.read(loggerProvider).debug('text empty');
                 return;
               }
               focusNode.unfocus();
@@ -160,19 +159,16 @@ class _FloatingActionButtons extends ConsumerWidget {
             child: const Icon(FontAwesomeIcons.trash),
             backgroundColor: Colors.red[300],
             onPressed: () async {
-              ref.read(loggerProvider).debug('');
               if (controller.text == '') {
-                debugPrint('text empty.');
+                ref.read(loggerProvider).debug('text empty');
                 return;
               }
 
-              focusNode.unfocus();
-
               if (ref.read(appSettingProvider).isDeleteConfirm) {
-                var result = await _showDeleteConfirm(
+                var result = await DialogUtil.showDeleteConfirm(
                     context, 'メモを削除', '入力を全て削除します。よろしいですか？');
                 if (!result) {
-                  debugPrint('delete cancel');
+                  ref.read(loggerProvider).debug('delete cancel');
                   FocusScope.of(context).requestFocus(focusNode);
                   return;
                 }
@@ -187,64 +183,5 @@ class _FloatingActionButtons extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  Future<bool> _showDeleteConfirm(
-    BuildContext context,
-    String title,
-    String content,
-  ) async {
-    final result = await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return _buildDeleteConfirmDialog(context, title, content);
-      },
-    );
-    return result;
-  }
-
-  Widget _buildDeleteConfirmDialog(
-    BuildContext context,
-    String title,
-    String content,
-  ) {
-    if (Platform.isIOS) {
-      return CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: [
-          CupertinoDialogAction(
-            child: const Text('キャンセル'),
-            onPressed: () => Navigator.pop(context, false),
-          ),
-          CupertinoDialogAction(
-            child: const Text(
-              '削除',
-              style: TextStyle(color: Colors.red),
-            ),
-            onPressed: () => Navigator.pop(context, true),
-          ),
-        ],
-      );
-    } else {
-      return AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: [
-          TextButton(
-            child: const Text('キャンセル'),
-            onPressed: () => Navigator.pop(context, false),
-          ),
-          TextButton(
-            child: const Text(
-              '削除',
-              style: TextStyle(color: Colors.red),
-            ),
-            onPressed: () => Navigator.pop(context, true),
-          ),
-        ],
-      );
-    }
   }
 }

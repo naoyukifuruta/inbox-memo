@@ -49,7 +49,7 @@ class SettingPage extends ConsumerWidget {
                 trailing: Switch.adaptive(
                   value: appSetting.isDeleteConfirm,
                   onChanged: (_) {
-                    appSetting.toggleDeleteConfirm();
+                    ref.read(appSettingProvider.notifier).toggleDeleteConfirm();
                   },
                 ),
                 onTap: null,
