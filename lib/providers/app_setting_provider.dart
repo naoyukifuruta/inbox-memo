@@ -1,18 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/app_settings.dart';
+import '../models/app_setting.dart';
 import 'shared_preferences_provider.dart';
 
 final appSettingProvider =
-    StateNotifierProvider<AppSettingNotifier, AppSettings>((ref) {
+    StateNotifierProvider<AppSettingNotifier, AppSetting>((ref) {
   return AppSettingNotifier(ref.read(sharedPreferencesProvider));
 });
 
-class AppSettingNotifier extends StateNotifier<AppSettings> {
-  AppSettingNotifier(this._pref) : super(AppSettings.init()) {
+class AppSettingNotifier extends StateNotifier<AppSetting> {
+  AppSettingNotifier(this._pref) : super(const AppSetting()) {
     final isDeleteConfirm = _pref.getBool('isDeleteConfirm') ?? false;
-    state = AppSettings(isDeleteConfirm);
+    state = AppSetting(isDeleteConfirm: isDeleteConfirm);
   }
 
   late final SharedPreferences _pref;
