@@ -5,5 +5,5 @@
     <img alt="Android" height="300px" src="doc/release/android/screenshot-1644879550025.png">
 </p>
 
-[Google Play](https://play.google.com/store/apps/details?id=com.nfrutta.inbox_memo)  
-iOS : If I feel like it.
+<a href='https://play.google.com/store/apps/details?id=com.nfrutta.inbox_memo&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Google Play で手に入れよう' src='https://play.google.com/intl/en_us/badges/static/images/badges/ja_badge_web_generic.png' height="80px"/></a>  
+iOS : -
