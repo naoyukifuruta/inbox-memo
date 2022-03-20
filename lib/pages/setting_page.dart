@@ -11,14 +11,13 @@ class SettingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeSelector = ref.watch(themeProvider.notifier);
-    final appSetting = ref.watch(appSettingProvider);
     return Container(
       height: 360,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Center(
         child: Column(
           children: <Widget>[
+            // 上部の−
             Container(
               height: 5,
               width: 32,
@@ -27,83 +26,116 @@ class SettingPage extends ConsumerWidget {
                 color: Theme.of(context).backgroundColor,
               ),
             ),
+            // タイトル
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 24.0),
               child: Text(
                 '設定',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
+            // 削除確認
+            const _DeleteConfirmElement(),
+            // ダークモード
+            const _DarkModeElement(),
+            // アプリについて
+            const _AppInfomationElement(),
+            // キャンセルボタン
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: ListTile(
-                leading: const SizedBox(
-                  height: 40,
-                  child: Icon(FontAwesomeIcons.exclamationTriangle),
+              padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
                 ),
-                title: const Text('削除時に確認を行う'),
-                subtitle: Text(appSetting.isDeleteConfirm ? 'ON' : 'OFF'),
-                trailing: Switch.adaptive(
-                  value: appSetting.isDeleteConfirm,
-                  onChanged: (_) {
-                    ref.read(appSettingProvider.notifier).toggleDeleteConfirm();
-                  },
-                ),
-                onTap: null,
+                child: const Text('キャンセル'),
+                onPressed: () => Navigator.pop(context, false),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: ListTile(
-                leading: const SizedBox(
-                  height: 40,
-                  child: Icon(FontAwesomeIcons.adjust),
-                ),
-                title: const Text('ダークモード'),
-                subtitle: Text(themeSelector.isDark ? 'ON' : 'OFF'),
-                trailing: Switch.adaptive(
-                  value: themeSelector.isDark,
-                  onChanged: (_) {
-                    themeSelector.toggleThemeMode();
-                  },
-                ),
-                onTap: null,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: ListTile(
-                leading: const SizedBox(
-                  height: 40,
-                  child: Icon(FontAwesomeIcons.infoCircle),
-                ),
-                title: const Text('アプリについて'),
-                onTap: () async {
-                  final info = await PackageInfo.fromPlatform();
-                  showAboutDialog(
-                    context: context,
-                    applicationName: info.appName,
-                    applicationVersion: info.version,
-                    applicationLegalese: "2022 ©Naoyuki Furuta",
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40),
-                ),
-              ),
-              child: const Text('キャンセル'),
-              onPressed: () => Navigator.pop(context, false),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DeleteConfirmElement extends ConsumerWidget {
+  const _DeleteConfirmElement({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appSetting = ref.watch(appSettingProvider);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: ListTile(
+        leading: const SizedBox(
+          height: 40,
+          child: Icon(FontAwesomeIcons.exclamationTriangle),
+        ),
+        title: const Text('削除時に確認を行う'),
+        subtitle: Text(appSetting.isDeleteConfirm ? 'ON' : 'OFF'),
+        trailing: Switch.adaptive(
+          value: appSetting.isDeleteConfirm,
+          onChanged: (_) {
+            ref.read(appSettingProvider.notifier).toggleDeleteConfirm();
+          },
+        ),
+        onTap: null,
+      ),
+    );
+  }
+}
+
+class _DarkModeElement extends ConsumerWidget {
+  const _DarkModeElement({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeSelector = ref.watch(themeProvider.notifier);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: ListTile(
+        leading: const SizedBox(
+          height: 40,
+          child: Icon(FontAwesomeIcons.adjust),
+        ),
+        title: const Text('ダークモード'),
+        subtitle: Text(themeSelector.isDark ? 'ON' : 'OFF'),
+        trailing: Switch.adaptive(
+          value: themeSelector.isDark,
+          onChanged: (_) {
+            themeSelector.toggleThemeMode();
+          },
+        ),
+        onTap: null,
+      ),
+    );
+  }
+}
+
+class _AppInfomationElement extends ConsumerWidget {
+  const _AppInfomationElement({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: ListTile(
+        leading: const SizedBox(
+          height: 40,
+          child: Icon(FontAwesomeIcons.infoCircle),
+        ),
+        title: const Text('アプリについて'),
+        onTap: () async {
+          final info = await PackageInfo.fromPlatform();
+          showAboutDialog(
+            context: context,
+            applicationName: info.appName,
+            applicationVersion: info.version,
+            applicationLegalese: "2022 ©Naoyuki Furuta",
+          );
+        },
       ),
     );
   }
