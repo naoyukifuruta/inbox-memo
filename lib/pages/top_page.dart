@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
 import 'package:inbox_memo/providers/logger_provider.dart';
 import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
@@ -20,14 +22,27 @@ class TopPage extends ConsumerStatefulWidget {
 }
 
 class TopPageState extends ConsumerState<TopPage> {
-  late final TextEditingController _controller;
+  //late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
+
+  TextStyle hyperLinkStyleO =
+      const TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
+  late LinkedTextEditingControllerO _controller;
 
   @override
   void initState() {
     super.initState();
     final initText = ref.read(memoProvider);
-    _controller = TextEditingController(text: initText);
+    // _controller = TextEditingController(text: initText);
+    _controller = LinkedTextEditingControllerO(
+      textO: initText,
+      linkStyleO: hyperLinkStyleO,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -183,5 +198,61 @@ class _FloatingActionButtons extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+class LinkedTextEditingControllerO extends TextEditingController {
+  final RegExp linkRegexpO;
+  final TextStyle linkStyleO;
+  final Function(String matchO) onTapO;
+
+  static final RegExp _defaultRegExpO = RegExp(
+    r'https?://([\w-]+\.)+[\w-]+(/[\w-./?%&=#]*)?',
+    caseSensitive: false,
+    dotAll: true,
+  );
+
+  static void _defaultOnLaunchO(String fullUrlO) async {
+    if (await canLaunch(fullUrlO)) {
+      await launch(fullUrlO);
+    }
+  }
+
+  LinkedTextEditingControllerO({
+    String? textO,
+    RegExp? regexp,
+    required this.linkStyleO,
+    this.onTapO = _defaultOnLaunchO,
+  })  : linkRegexpO = regexp ?? _defaultRegExpO,
+        super(text: textO);
+
+  @override
+  TextSpan buildTextSpan({
+    BuildContext? context,
+    TextStyle? style,
+    bool? withComposing,
+  }) {
+    List<TextSpan> childrenO = [];
+    text.splitMapJoin(
+      linkRegexpO,
+      onMatch: (Match matchO) {
+        debugPrint('Match!');
+        childrenO.add(
+          TextSpan(
+            text: matchO[0],
+            style: linkStyleO,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => onTapO(matchO[0]!),
+          ),
+        );
+        return "";
+      },
+      onNonMatch: (String spanO) {
+        debugPrint('No Match');
+        childrenO.add(TextSpan(text: spanO, style: style));
+        return "";
+      },
+    );
+    return TextSpan(style: style, children: childrenO);
   }
 }
