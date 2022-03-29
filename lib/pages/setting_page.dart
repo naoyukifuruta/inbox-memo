@@ -77,6 +77,7 @@ class _DeleteConfirmElement extends ConsumerWidget {
         subtitle: Text(appSetting.isDeleteConfirm ? 'ON' : 'OFF'),
         trailing: Switch.adaptive(
           value: appSetting.isDeleteConfirm,
+          activeColor: Theme.of(context).primaryColor,
           onChanged: (_) {
             ref.read(appSettingProvider.notifier).toggleDeleteConfirm();
           },
@@ -92,6 +93,8 @@ class _DarkModeElement extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TODO:
+    final theme = ref.watch(themeProvider);
     final themeSelector = ref.watch(themeProvider.notifier);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -104,6 +107,7 @@ class _DarkModeElement extends ConsumerWidget {
         subtitle: Text(themeSelector.isDark ? 'ON' : 'OFF'),
         trailing: Switch.adaptive(
           value: themeSelector.isDark,
+          activeColor: Theme.of(context).primaryColor,
           onChanged: (_) {
             themeSelector.toggleThemeMode();
           },

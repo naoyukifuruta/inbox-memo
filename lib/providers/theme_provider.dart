@@ -26,6 +26,7 @@ class ThemeSelector extends StateNotifier<ThemeMode> {
       brightness: Brightness.light,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       primarySwatch: Colors.blueGrey,
+      primaryColor: Colors.blueGrey,
     );
   }
 
@@ -33,6 +34,10 @@ class ThemeSelector extends StateNotifier<ThemeMode> {
     return ThemeData(
       brightness: Brightness.dark,
       visualDensity: VisualDensity.adaptivePlatformDensity,
+      primarySwatch: Colors.blueGrey,
+      primaryColor: Colors.blueGrey[300],
+      // ignore: deprecated_member_use
+      accentColor: Colors.blueGrey[300],
     );
   }
 

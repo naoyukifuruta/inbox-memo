@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
@@ -22,26 +23,27 @@ class TopPage extends ConsumerStatefulWidget {
 }
 
 class TopPageState extends ConsumerState<TopPage> {
-  //late final TextEditingController _controller;
+  late final TextEditingControllerWrapper _controller;
   final FocusNode _focusNode = FocusNode();
 
-  TextStyle hyperLinkStyleO =
-      const TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
-  late LinkedTextEditingControllerO _controller;
+  TextStyle hyperLinkStyle = const TextStyle(
+    color: Colors.blue,
+    decoration: TextDecoration.underline,
+  );
 
   @override
   void initState() {
     super.initState();
     final initText = ref.read(memoProvider);
-    // _controller = TextEditingController(text: initText);
-    _controller = LinkedTextEditingControllerO(
-      textO: initText,
-      linkStyleO: hyperLinkStyleO,
+    _controller = TextEditingControllerWrapper(
+      text: initText,
+      linkTextStyle: hyperLinkStyle,
     );
   }
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
@@ -75,6 +77,8 @@ class _Body extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TODO:
+    final a = ref.watch(themeProvider);
     final isDark = ref.watch(themeProvider.notifier).isDark;
     return SafeArea(
       child: Container(
@@ -161,7 +165,6 @@ class _FloatingActionButtons extends ConsumerWidget {
             child: const Icon(FontAwesomeIcons.shareAlt),
             onPressed: () async {
               if (controller.text == '') {
-                ref.read(loggerProvider).debug('text empty');
                 return;
               }
               focusNode.unfocus();
@@ -169,6 +172,28 @@ class _FloatingActionButtons extends ConsumerWidget {
             },
           ),
           const Expanded(child: SizedBox()),
+          // クリップボードからコピーボタン
+          // FloatingActionButton(
+          //   child: const Icon(FontAwesomeIcons.clipboard),
+          //   backgroundColor: Colors.green[400],
+          //   onPressed: () async {
+          //     final data = await Clipboard.getData("text/plain");
+          //     if (data == null) {
+          //       return;
+          //     }
+
+          //     final nowText = controller.text;
+          //     if (nowText.isEmpty) {
+          //       controller.text = data.text!;
+          //     } else {
+          //       controller.text = nowText + '\n' + data.text!;
+          //     }
+          //     controller.selection = TextSelection.fromPosition(
+          //       TextPosition(offset: controller.text.length),
+          //     );
+          //   },
+          // ),
+          // const SizedBox(width: 16),
           // メモ削除ボタン
           FloatingActionButton(
             child: const Icon(FontAwesomeIcons.trash),
@@ -201,30 +226,32 @@ class _FloatingActionButtons extends ConsumerWidget {
   }
 }
 
-class LinkedTextEditingControllerO extends TextEditingController {
-  final RegExp linkRegexpO;
-  final TextStyle linkStyleO;
-  final Function(String matchO) onTapO;
+// URLをハイパーリンクにするTextEditingControllerのラッパークラス
+// memo: iOSシミュレータだと例外が飛ぶ時がある
+class TextEditingControllerWrapper extends TextEditingController {
+  final RegExp linkRegExp;
+  final TextStyle linkTextStyle;
+  final Function(String matched) onLinkTextTap;
 
-  static final RegExp _defaultRegExpO = RegExp(
+  static final RegExp _defaultRegExp = RegExp(
     r'https?://([\w-]+\.)+[\w-]+(/[\w-./?%&=#]*)?',
     caseSensitive: false,
     dotAll: true,
   );
 
-  static void _defaultOnLaunchO(String fullUrlO) async {
-    if (await canLaunch(fullUrlO)) {
-      await launch(fullUrlO);
+  static void _defaultOnLaunch(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
     }
   }
 
-  LinkedTextEditingControllerO({
-    String? textO,
+  TextEditingControllerWrapper({
+    String? text,
     RegExp? regexp,
-    required this.linkStyleO,
-    this.onTapO = _defaultOnLaunchO,
-  })  : linkRegexpO = regexp ?? _defaultRegExpO,
-        super(text: textO);
+    required this.linkTextStyle,
+    this.onLinkTextTap = _defaultOnLaunch,
+  })  : linkRegExp = regexp ?? _defaultRegExp,
+        super(text: text);
 
   @override
   TextSpan buildTextSpan({
@@ -232,27 +259,25 @@ class LinkedTextEditingControllerO extends TextEditingController {
     TextStyle? style,
     bool? withComposing,
   }) {
-    List<TextSpan> childrenO = [];
+    List<TextSpan> children = [];
     text.splitMapJoin(
-      linkRegexpO,
-      onMatch: (Match matchO) {
-        debugPrint('Match!');
-        childrenO.add(
+      linkRegExp,
+      onMatch: (Match match) {
+        children.add(
           TextSpan(
-            text: matchO[0],
-            style: linkStyleO,
+            text: match[0],
+            style: linkTextStyle,
             recognizer: TapGestureRecognizer()
-              ..onTap = () => onTapO(matchO[0]!),
+              ..onTap = () => onLinkTextTap(match[0]!),
           ),
         );
         return "";
       },
-      onNonMatch: (String spanO) {
-        debugPrint('No Match');
-        childrenO.add(TextSpan(text: spanO, style: style));
+      onNonMatch: (String span) {
+        children.add(TextSpan(text: span, style: style));
         return "";
       },
     );
-    return TextSpan(style: style, children: childrenO);
+    return TextSpan(style: style, children: children);
   }
 }
