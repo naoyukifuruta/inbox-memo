@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
 import 'package:inbox_memo/providers/logger_provider.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/memo_provider.dart';
@@ -168,7 +168,7 @@ class _FloatingActionButtons extends ConsumerWidget {
                 return;
               }
               focusNode.unfocus();
-              await Share.share(controller.text);
+              await Share.share(controller.text, subject: controller.text);
             },
           ),
           const Expanded(child: SizedBox()),
