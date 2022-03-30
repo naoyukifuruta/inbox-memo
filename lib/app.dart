@@ -10,10 +10,11 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = ref.watch(themeProvider);
     return MaterialApp(
-      theme: ref.watch(themeProvider.notifier).getLightThemeData(),
-      darkTheme: ref.watch(themeProvider.notifier).getDarkThemeData(),
-      themeMode: ref.watch(themeProvider),
+      theme: theme.getLightThemeData(),
+      darkTheme: theme.getDarkThemeData(),
+      themeMode: theme.getThemeMode(),
       debugShowCheckedModeBanner:
           ref.read(flavorProvider) == Flavor.prd ? false : true,
       home: const TopPage(),

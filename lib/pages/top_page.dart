@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+//import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
 import 'package:inbox_memo/providers/logger_provider.dart';
 import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
@@ -20,14 +23,30 @@ class TopPage extends ConsumerStatefulWidget {
 }
 
 class TopPageState extends ConsumerState<TopPage> {
-  late final TextEditingController _controller;
+  late final TextEditingControllerWrapper _controller;
+  //late final TextEditingController _controller; // debug用
   final FocusNode _focusNode = FocusNode();
+
+  TextStyle hyperLinkStyle = const TextStyle(
+    color: Colors.blue,
+    decoration: TextDecoration.underline,
+  );
 
   @override
   void initState() {
     super.initState();
     final initText = ref.read(memoProvider);
-    _controller = TextEditingController(text: initText);
+    _controller = TextEditingControllerWrapper(
+      text: initText,
+      linkTextStyle: hyperLinkStyle,
+    );
+    //_controller = TextEditingController(text: initText); //debug用
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -60,30 +79,30 @@ class _Body extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = ref.watch(themeProvider.notifier).isDark;
+    final theme = ref.watch(themeProvider);
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.all(16.0),
         child: TextFormField(
           decoration: InputDecoration(
-            fillColor: isDark ? Colors.grey[800] : Colors.blueGrey[50],
+            fillColor: theme.isDark ? Colors.grey[800] : Colors.blueGrey[50],
             filled: true,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
+                color: theme.isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
+                color: theme.isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
               ),
             ),
           ),
-          cursorColor: isDark ? Colors.indigo[400] : Colors.blueGrey,
+          cursorColor: theme.isDark ? Colors.indigo[400] : Colors.blueGrey,
           controller: controller,
           maxLines: _getTextMaxLines(context),
           style: TextStyle(
-            color: isDark ? Colors.white : Colors.black,
+            color: theme.isDark ? Colors.white : Colors.black,
             fontSize: 16.0,
           ),
           autofocus: true,
@@ -143,10 +162,9 @@ class _FloatingActionButtons extends ConsumerWidget {
           const SizedBox(width: 16),
           // 共有ボタン
           FloatingActionButton(
-            child: const Icon(FontAwesomeIcons.shareAlt),
+            child: const Icon(FontAwesomeIcons.solidShareSquare),
             onPressed: () async {
               if (controller.text == '') {
-                ref.read(loggerProvider).debug('text empty');
                 return;
               }
               focusNode.unfocus();
@@ -154,6 +172,27 @@ class _FloatingActionButtons extends ConsumerWidget {
             },
           ),
           const Expanded(child: SizedBox()),
+          // クリップボードからコピーボタン
+          // FloatingActionButton(
+          //   child: const Icon(FontAwesomeIcons.clipboard),
+          //   backgroundColor: Colors.green[400],
+          //   onPressed: () async {
+          //     final data = await Clipboard.getData("text/plain");
+          //     if (data == null) {
+          //       return;
+          //     }
+          //     final nowText = controller.text;
+          //     if (nowText.isEmpty) {
+          //       controller.text = data.text!;
+          //     } else {
+          //       controller.text = nowText + '\n' + data.text!;
+          //     }
+          //     controller.selection = TextSelection.fromPosition(
+          //       TextPosition(offset: controller.text.length),
+          //     );
+          //   },
+          // ),
+          // const SizedBox(width: 16),
           // メモ削除ボタン
           FloatingActionButton(
             child: const Icon(FontAwesomeIcons.trash),
@@ -183,5 +222,61 @@ class _FloatingActionButtons extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+// URLをハイパーリンクにするTextEditingControllerのラッパークラス
+// memo: iOSシミュレータだと例外が飛ぶ時がある
+class TextEditingControllerWrapper extends TextEditingController {
+  final RegExp linkRegExp;
+  final TextStyle linkTextStyle;
+  final Function(String matched) onLinkTextTap;
+
+  static final RegExp _defaultRegExp = RegExp(
+    r'https?://([\w-]+\.)+[\w-]+(/[\w-./?%&=#]*)?',
+    caseSensitive: false,
+    dotAll: true,
+  );
+
+  static void _defaultOnLaunch(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+  }
+
+  TextEditingControllerWrapper({
+    String? text,
+    RegExp? regexp,
+    required this.linkTextStyle,
+    this.onLinkTextTap = _defaultOnLaunch,
+  })  : linkRegExp = regexp ?? _defaultRegExp,
+        super(text: text);
+
+  @override
+  TextSpan buildTextSpan({
+    BuildContext? context,
+    TextStyle? style,
+    bool? withComposing,
+  }) {
+    List<TextSpan> children = [];
+    text.splitMapJoin(
+      linkRegExp,
+      onMatch: (Match match) {
+        children.add(
+          TextSpan(
+            text: match[0],
+            style: linkTextStyle,
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => onLinkTextTap(match[0]!),
+          ),
+        );
+        return "";
+      },
+      onNonMatch: (String span) {
+        children.add(TextSpan(text: span, style: style));
+        return "";
+      },
+    );
+    return TextSpan(style: style, children: children);
   }
 }
