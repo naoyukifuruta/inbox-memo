@@ -1,44 +1,23 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/my_app_theme.dart';
 import 'shared_preferences_provider.dart';
 
-final themeProvider = StateNotifierProvider<ThemeSelector, ThemeMode>((ref) {
-  return ThemeSelector(ref);
+final themeProvider = StateNotifierProvider<ThemeSelector, MyAppTheme>((ref) {
+  return ThemeSelector(ref.read(sharedPreferencesProvider));
 });
 
-class ThemeSelector extends StateNotifier<ThemeMode> {
-  ThemeSelector(this._ref) : super(ThemeMode.light) {
-    _pref = _ref.read(sharedPreferencesProvider);
-    _isDark = _pref.getBool('isDark') ?? false;
-    state = _isDark ? ThemeMode.dark : ThemeMode.light;
+class ThemeSelector extends StateNotifier<MyAppTheme> {
+  ThemeSelector(this._pref) : super(const MyAppTheme()) {
+    final isDark = _pref.getBool('isDark') ?? false;
+    state = MyAppTheme(isDark: isDark);
   }
 
-  final Ref _ref;
-  late final SharedPreferences _pref;
-
-  bool get isDark => _isDark;
-  bool _isDark = false;
-
-  ThemeData getLightThemeData() {
-    return ThemeData(
-      brightness: Brightness.light,
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-      primarySwatch: Colors.blueGrey,
-    );
-  }
-
-  ThemeData getDarkThemeData() {
-    return ThemeData(
-      brightness: Brightness.dark,
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-    );
-  }
+  final SharedPreferences _pref;
 
   void toggleThemeMode() {
-    _isDark = !_isDark;
-    _pref.setBool('isDark', _isDark);
-    state = _isDark ? ThemeMode.dark : ThemeMode.light;
+    state = state.copyWith(isDark: !state.isDark);
+    _pref.setBool('isDark', state.isDark);
   }
 }
