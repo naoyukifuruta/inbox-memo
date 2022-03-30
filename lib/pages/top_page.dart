@@ -24,6 +24,7 @@ class TopPage extends ConsumerStatefulWidget {
 
 class TopPageState extends ConsumerState<TopPage> {
   late final TextEditingControllerWrapper _controller;
+  //late final TextEditingController _controller; // debug用
   final FocusNode _focusNode = FocusNode();
 
   TextStyle hyperLinkStyle = const TextStyle(
@@ -39,6 +40,7 @@ class TopPageState extends ConsumerState<TopPage> {
       text: initText,
       linkTextStyle: hyperLinkStyle,
     );
+    //_controller = TextEditingController(text: initText); //debug用
   }
 
   @override
@@ -77,32 +79,30 @@ class _Body extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO:
-    final a = ref.watch(themeProvider);
-    final isDark = ref.watch(themeProvider.notifier).isDark;
+    final theme = ref.watch(themeProvider);
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.all(16.0),
         child: TextFormField(
           decoration: InputDecoration(
-            fillColor: isDark ? Colors.grey[800] : Colors.blueGrey[50],
+            fillColor: theme.isDark ? Colors.grey[800] : Colors.blueGrey[50],
             filled: true,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
+                color: theme.isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
+                color: theme.isDark ? Colors.grey[800]! : Colors.blueGrey[50]!,
               ),
             ),
           ),
-          cursorColor: isDark ? Colors.indigo[400] : Colors.blueGrey,
+          cursorColor: theme.isDark ? Colors.indigo[400] : Colors.blueGrey,
           controller: controller,
           maxLines: _getTextMaxLines(context),
           style: TextStyle(
-            color: isDark ? Colors.white : Colors.black,
+            color: theme.isDark ? Colors.white : Colors.black,
             fontSize: 16.0,
           ),
           autofocus: true,
@@ -162,7 +162,7 @@ class _FloatingActionButtons extends ConsumerWidget {
           const SizedBox(width: 16),
           // 共有ボタン
           FloatingActionButton(
-            child: const Icon(FontAwesomeIcons.shareAlt),
+            child: const Icon(FontAwesomeIcons.solidShareSquare),
             onPressed: () async {
               if (controller.text == '') {
                 return;
@@ -181,7 +181,6 @@ class _FloatingActionButtons extends ConsumerWidget {
           //     if (data == null) {
           //       return;
           //     }
-
           //     final nowText = controller.text;
           //     if (nowText.isEmpty) {
           //       controller.text = data.text!;
