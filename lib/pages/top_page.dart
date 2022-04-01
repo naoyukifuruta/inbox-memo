@@ -23,8 +23,8 @@ class TopPage extends ConsumerStatefulWidget {
 }
 
 class TopPageState extends ConsumerState<TopPage> {
-  late final TextEditingControllerWrapper _controller;
-  //late final TextEditingController _controller; // debug用
+  //late final TextEditingControllerWrapper _controller;
+  late final TextEditingController _controller; // debug用
   final FocusNode _focusNode = FocusNode();
 
   TextStyle hyperLinkStyle = const TextStyle(
@@ -36,11 +36,11 @@ class TopPageState extends ConsumerState<TopPage> {
   void initState() {
     super.initState();
     final initText = ref.read(memoProvider);
-    _controller = TextEditingControllerWrapper(
-      text: initText,
-      linkTextStyle: hyperLinkStyle,
-    );
-    //_controller = TextEditingController(text: initText); //debug用
+    // _controller = TextEditingControllerWrapper(
+    //   text: initText,
+    //   linkTextStyle: hyperLinkStyle,
+    // );
+    _controller = TextEditingController(text: initText); //debug用
   }
 
   @override
