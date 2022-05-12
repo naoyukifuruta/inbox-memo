@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info/package_info.dart';
 
 import '../providers/app_setting_provider.dart';
 import '../providers/theme_provider.dart';
 
-class SettingPage extends ConsumerWidget {
+class SettingPage extends HookConsumerWidget {
   const SettingPage({Key? key}) : super(key: key);
 
   @override
@@ -60,7 +60,7 @@ class SettingPage extends ConsumerWidget {
   }
 }
 
-class _DeleteConfirmElement extends ConsumerWidget {
+class _DeleteConfirmElement extends HookConsumerWidget {
   const _DeleteConfirmElement({Key? key}) : super(key: key);
 
   @override
@@ -88,7 +88,7 @@ class _DeleteConfirmElement extends ConsumerWidget {
   }
 }
 
-class _DarkModeElement extends ConsumerWidget {
+class _DarkModeElement extends HookConsumerWidget {
   const _DarkModeElement({Key? key}) : super(key: key);
 
   @override
@@ -116,7 +116,7 @@ class _DarkModeElement extends ConsumerWidget {
   }
 }
 
-class _AppInfomationElement extends ConsumerWidget {
+class _AppInfomationElement extends HookConsumerWidget {
   const _AppInfomationElement({Key? key}) : super(key: key);
 
   @override
