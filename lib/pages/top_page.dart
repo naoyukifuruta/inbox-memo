@@ -1,21 +1,18 @@
 import 'dart:io';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
 import 'package:inbox_memo/providers/logger_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
 import '../utils/dialog_util.dart';
 import 'setting_page.dart';
 
-class TopPage extends ConsumerStatefulWidget {
+class TopPage extends StatefulHookConsumerWidget {
   const TopPage({Key? key}) : super(key: key);
 
   @override
@@ -23,8 +20,7 @@ class TopPage extends ConsumerStatefulWidget {
 }
 
 class TopPageState extends ConsumerState<TopPage> {
-  //late final TextEditingControllerWrapper _controller;
-  late final TextEditingController _controller; // debug用
+  late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
 
   TextStyle hyperLinkStyle = const TextStyle(
@@ -36,11 +32,7 @@ class TopPageState extends ConsumerState<TopPage> {
   void initState() {
     super.initState();
     final initText = ref.read(memoProvider);
-    // _controller = TextEditingControllerWrapper(
-    //   text: initText,
-    //   linkTextStyle: hyperLinkStyle,
-    // );
-    _controller = TextEditingController(text: initText); //debug用
+    _controller = TextEditingController(text: initText);
   }
 
   @override
@@ -172,27 +164,6 @@ class _FloatingActionButtons extends ConsumerWidget {
             },
           ),
           const Expanded(child: SizedBox()),
-          // クリップボードからコピーボタン
-          // FloatingActionButton(
-          //   child: const Icon(FontAwesomeIcons.clipboard),
-          //   backgroundColor: Colors.green[400],
-          //   onPressed: () async {
-          //     final data = await Clipboard.getData("text/plain");
-          //     if (data == null) {
-          //       return;
-          //     }
-          //     final nowText = controller.text;
-          //     if (nowText.isEmpty) {
-          //       controller.text = data.text!;
-          //     } else {
-          //       controller.text = nowText + '\n' + data.text!;
-          //     }
-          //     controller.selection = TextSelection.fromPosition(
-          //       TextPosition(offset: controller.text.length),
-          //     );
-          //   },
-          // ),
-          // const SizedBox(width: 16),
           // メモ削除ボタン
           FloatingActionButton(
             child: const Icon(FontAwesomeIcons.trash),
@@ -222,61 +193,5 @@ class _FloatingActionButtons extends ConsumerWidget {
         ],
       ),
     );
-  }
-}
-
-// URLをハイパーリンクにするTextEditingControllerのラッパークラス
-// memo: iOSシミュレータだと例外が飛ぶ時がある
-class TextEditingControllerWrapper extends TextEditingController {
-  final RegExp linkRegExp;
-  final TextStyle linkTextStyle;
-  final Function(String matched) onLinkTextTap;
-
-  static final RegExp _defaultRegExp = RegExp(
-    r'https?://([\w-]+\.)+[\w-]+(/[\w-./?%&=#]*)?',
-    caseSensitive: false,
-    dotAll: true,
-  );
-
-  static void _defaultOnLaunch(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    }
-  }
-
-  TextEditingControllerWrapper({
-    String? text,
-    RegExp? regexp,
-    required this.linkTextStyle,
-    this.onLinkTextTap = _defaultOnLaunch,
-  })  : linkRegExp = regexp ?? _defaultRegExp,
-        super(text: text);
-
-  @override
-  TextSpan buildTextSpan({
-    BuildContext? context,
-    TextStyle? style,
-    bool? withComposing,
-  }) {
-    List<TextSpan> children = [];
-    text.splitMapJoin(
-      linkRegExp,
-      onMatch: (Match match) {
-        children.add(
-          TextSpan(
-            text: match[0],
-            style: linkTextStyle,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () => onLinkTextTap(match[0]!),
-          ),
-        );
-        return "";
-      },
-      onNonMatch: (String span) {
-        children.add(TextSpan(text: span, style: style));
-        return "";
-      },
-    );
-    return TextSpan(style: style, children: children);
   }
 }
