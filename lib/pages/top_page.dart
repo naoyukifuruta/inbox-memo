@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
-import 'package:inbox_memo/providers/logger_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../providers/memo_provider.dart';
@@ -109,7 +105,8 @@ class _Body extends ConsumerWidget {
 
   int _getTextMaxLines(BuildContext context) {
     final int textMaxLines = MediaQuery.of(context).size.height ~/ 100 * 2;
-    return Platform.isAndroid ? textMaxLines - 1 : textMaxLines + 1;
+    //return Platform.isAndroid ? textMaxLines : textMaxLines + 1;
+    return textMaxLines + 1;
   }
 }
 
@@ -133,7 +130,7 @@ class _FloatingActionButtons extends ConsumerWidget {
           const SizedBox(width: 32), // 左にめり込むのでその対策
           // 設定ボタン
           FloatingActionButton(
-            child: const Icon(FontAwesomeIcons.cog),
+            child: const Icon(Icons.settings),
             onPressed: () async {
               focusNode.unfocus();
               await showModalBottomSheet<void>(
@@ -148,13 +145,13 @@ class _FloatingActionButtons extends ConsumerWidget {
                   return const SettingPage();
                 },
               );
-              FocusScope.of(context).requestFocus(focusNode);
+              //FocusScope.of(context).requestFocus(focusNode);
             },
           ),
           const SizedBox(width: 16),
           // 共有ボタン
           FloatingActionButton(
-            child: const Icon(FontAwesomeIcons.solidShareSquare),
+            child: const Icon(Icons.share),
             onPressed: () async {
               if (controller.text == '') {
                 return;
@@ -166,11 +163,9 @@ class _FloatingActionButtons extends ConsumerWidget {
           const Expanded(child: SizedBox()),
           // メモ削除ボタン
           FloatingActionButton(
-            child: const Icon(FontAwesomeIcons.trash),
             backgroundColor: Colors.red[300],
             onPressed: () async {
               if (controller.text == '') {
-                ref.read(loggerProvider).debug('text empty');
                 return;
               }
 
@@ -178,8 +173,7 @@ class _FloatingActionButtons extends ConsumerWidget {
                 var result = await DialogUtil.showDeleteConfirm(
                     context, 'メモを削除', '入力を全て削除します。よろしいですか？');
                 if (!result) {
-                  ref.read(loggerProvider).debug('delete cancel');
-                  FocusScope.of(context).requestFocus(focusNode);
+                  //FocusScope.of(context).requestFocus(focusNode);
                   return;
                 }
               }
@@ -187,8 +181,9 @@ class _FloatingActionButtons extends ConsumerWidget {
               ref.read(memoProvider.notifier).clear();
               controller.clear();
 
-              FocusScope.of(context).requestFocus(focusNode);
+              //FocusScope.of(context).requestFocus(focusNode);
             },
+            child: const Icon(Icons.delete),
           ),
         ],
       ),
