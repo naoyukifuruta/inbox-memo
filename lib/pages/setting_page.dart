@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info/package_info.dart';
 
@@ -71,7 +70,7 @@ class _DeleteConfirmElement extends HookConsumerWidget {
       child: ListTile(
         leading: const SizedBox(
           height: 40,
-          child: Icon(FontAwesomeIcons.exclamationTriangle),
+          child: Icon(Icons.electric_bolt),
         ),
         title: const Text('削除時に確認を行う'),
         subtitle: Text(appSetting.isDeleteConfirm ? 'ON' : 'OFF'),
@@ -99,7 +98,7 @@ class _DarkModeElement extends HookConsumerWidget {
       child: ListTile(
         leading: const SizedBox(
           height: 40,
-          child: Icon(FontAwesomeIcons.adjust),
+          child: Icon(Icons.dark_mode_outlined),
         ),
         title: const Text('ダークモード'),
         subtitle: Text(theme.isDark ? 'ON' : 'OFF'),
@@ -126,7 +125,7 @@ class _AppInfomationElement extends HookConsumerWidget {
       child: ListTile(
         leading: const SizedBox(
           height: 40,
-          child: Icon(FontAwesomeIcons.infoCircle),
+          child: Icon(Icons.info_outline),
         ),
         title: const Text('アプリについて'),
         onTap: () async {
