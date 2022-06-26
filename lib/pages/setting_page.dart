@@ -5,7 +5,7 @@ import 'package:package_info/package_info.dart';
 import '../providers/app_setting_provider.dart';
 import '../providers/theme_provider.dart';
 
-class SettingPage extends HookConsumerWidget {
+class SettingPage extends ConsumerWidget {
   const SettingPage({Key? key}) : super(key: key);
 
   @override

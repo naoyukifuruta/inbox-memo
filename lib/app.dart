@@ -5,7 +5,7 @@ import 'pages/top_page.dart';
 import 'providers/flavor_provoder.dart';
 import 'providers/theme_provider.dart';
 
-class App extends HookConsumerWidget {
+class App extends ConsumerWidget {
   const App({Key? key}) : super(key: key);
 
   @override
