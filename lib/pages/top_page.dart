@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:inbox_memo/providers/app_setting_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -8,48 +9,24 @@ import '../providers/theme_provider.dart';
 import '../utils/dialog_util.dart';
 import 'setting_page.dart';
 
-class TopPage extends StatefulHookConsumerWidget {
+class TopPage extends HookConsumerWidget {
   const TopPage({Key? key}) : super(key: key);
 
   @override
-  TopPageState createState() => TopPageState();
-}
-
-class TopPageState extends ConsumerState<TopPage> {
-  late final TextEditingController _controller;
-  final FocusNode _focusNode = FocusNode();
-
-  TextStyle hyperLinkStyle = const TextStyle(
-    color: Colors.blue,
-    decoration: TextDecoration.underline,
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    final initText = ref.read(memoProvider);
-    _controller = TextEditingController(text: initText);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _controller.selection = TextSelection.fromPosition(
-      TextPosition(offset: _controller.text.length),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = useTextEditingController(text: ref.read(memoProvider));
+    controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: controller.text.length),
     );
+    final focusNode = useFocusNode();
     return Scaffold(
       body: _Body(
-        controller: _controller,
-        focusNode: _focusNode,
+        controller: controller,
+        focusNode: focusNode,
       ),
       floatingActionButton: _FloatingActionButtons(
-        controller: _controller,
-        focusNode: _focusNode,
+        controller: controller,
+        focusNode: focusNode,
       ),
     );
   }
@@ -145,7 +122,7 @@ class _FloatingActionButtons extends ConsumerWidget {
                   return const SettingPage();
                 },
               );
-              //FocusScope.of(context).requestFocus(focusNode);
+              focusNode.requestFocus();
             },
           ),
           const SizedBox(width: 16),
@@ -171,9 +148,12 @@ class _FloatingActionButtons extends ConsumerWidget {
 
               if (ref.read(appSettingProvider).isDeleteConfirm) {
                 var result = await DialogUtil.showDeleteConfirm(
-                    context, 'メモを削除', '入力を全て削除します。よろしいですか？');
+                  context,
+                  '確認',
+                  'メモを全て削除します。よろしいですか？',
+                );
                 if (!result) {
-                  //FocusScope.of(context).requestFocus(focusNode);
+                  focusNode.requestFocus();
                   return;
                 }
               }
@@ -181,7 +161,7 @@ class _FloatingActionButtons extends ConsumerWidget {
               ref.read(memoProvider.notifier).clear();
               controller.clear();
 
-              //FocusScope.of(context).requestFocus(focusNode);
+              focusNode.requestFocus();
             },
             child: const Icon(Icons.delete),
           ),
