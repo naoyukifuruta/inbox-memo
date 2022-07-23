@@ -1,5 +1,7 @@
 # Inbox memo
 
+[![Flutter CI](https://github.com/nfrutta/inbox-memo/actions/workflows/ci.yaml/badge.svg)](https://github.com/nfrutta/inbox-memo/actions/workflows/ci.yaml)
+
 <p>
     <img alt="Android" height="300px" src="doc/release/android/screenshot-1644879466728.png">
     <img alt="Android" height="300px" src="doc/release/android/screenshot-1644879550025.png">
