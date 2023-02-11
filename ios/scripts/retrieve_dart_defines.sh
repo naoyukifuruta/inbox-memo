@@ -23,3 +23,7 @@ do
         echo "#include \"$value.xcconfig\"" >> $OUTPUT_FILE
     fi
 done
+# 追記 ファイルが空の際にdevを指定する
+if [ ! -s $OUTPUT_FILE  ] ; then
+  echo "#include \"dev.xcconfig\"" >> $OUTPUT_FILE
+fi

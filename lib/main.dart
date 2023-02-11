@@ -21,6 +21,7 @@ Future<void> main() async {
   ]);
 
   const flavor = String.fromEnvironment('FLAVOR');
+  debugPrint(flavor);
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
     (_) {
@@ -29,7 +30,7 @@ Future<void> main() async {
           overrides: [
             sharedPreferencesProvider.overrideWithValue(sp),
             packageInfoProvider.overrideWithValue(pi),
-            flavorProvider.overrideWithValue(Flavor.values.byName(flavor)),
+            //flavorProvider.overrideWithValue(Flavor.values.byName(flavor)),
           ],
           child: const App(),
         ),
