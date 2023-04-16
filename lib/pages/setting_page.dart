@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_setting_provider.dart';
 import '../providers/theme_provider.dart';
@@ -11,7 +12,7 @@ class SettingPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      height: 360,
+      height: 440,
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: Center(
         child: Column(
@@ -37,8 +38,11 @@ class SettingPage extends ConsumerWidget {
             const _DeleteConfirmElement(),
             // ダークモード
             const _DarkModeElement(),
+            const SizedBox(height: 8.0),
             // アプリについて
             const _AppInfomationElement(),
+            // プライバシーポリシー
+            const _PrivacyPolicyElement(),
             // キャンセルボタン
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
@@ -136,6 +140,33 @@ class _AppInfomationElement extends HookConsumerWidget {
             applicationVersion: info.version,
             applicationLegalese: "2022 ©Naoyuki Furuta",
           );
+        },
+      ),
+    );
+  }
+}
+
+class _PrivacyPolicyElement extends HookConsumerWidget {
+  const _PrivacyPolicyElement({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: ListTile(
+        leading: const SizedBox(
+          height: 40,
+          child: Icon(Icons.info_outline),
+        ),
+        title: const Text('プライバシーポリシー'),
+        onTap: () async {
+          final url = Uri.parse(
+              'https://splendid-waterlily-673.notion.site/Inbox-9c87a19e2b384bca82311ba4d3242a20');
+          if (await canLaunchUrl(url)) {
+            launchUrl(url);
+          } else {
+            print("Can't launch $url");
+          }
         },
       ),
     );
