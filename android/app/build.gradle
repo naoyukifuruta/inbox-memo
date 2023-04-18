@@ -64,10 +64,8 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        if (dartEnvironmentVariables.FLAVOR != 'prd') {
-            applicationIdSuffix ".${dartEnvironmentVariables.FLAVOR}"
-        }
-        resValue "string", "app_name", "Inboxメモ" + (dartEnvironmentVariables.FLAVOR == 'prd' ? '' : ".${dartEnvironmentVariables.FLAVOR}")
+        applicationIdSuffix appIdSuffix
+        resValue "string", "app_name", appName
     }
 
     signingConfigs {
@@ -95,7 +93,7 @@ dependencies {
 }
 
 task copySources(type: Copy) {
-    from "src/${dartEnvironmentVariables.FLAVOR}/res"
+    from "src/$flavor/res"
     into 'src/main/res'
 }
 tasks.whenTaskAdded { task ->

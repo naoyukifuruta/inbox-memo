@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:inbox_memo/providers/app_setting_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../providers/app_setting_provider.dart';
 import '../providers/memo_provider.dart';
 import '../providers/theme_provider.dart';
 import '../utils/dialog_util.dart';
