@@ -5,19 +5,28 @@
             "name": "Run dev",
             "request": "launch",
             "type": "dart",
-            "args": ["--dart-define=FLAVOR=dev"]
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define-from-file=dart_defines/dev.json"
+            ]
         },
         {
             "name": "Run stg",
             "request": "launch",
             "type": "dart",
-            "args": ["--dart-define=FLAVOR=stg"]
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define-from-file=dart_defines/stg.json"
+            ]
         },
         {
             "name": "Run prd",
             "request": "launch",
             "type": "dart",
-            "args": ["--dart-define=FLAVOR=prd", "--release"]
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define-from-file=dart_defines/prd.json"
+            ]
         }
     ]
 }

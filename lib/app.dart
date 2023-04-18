@@ -15,8 +15,8 @@ class App extends ConsumerWidget {
       theme: theme.getLightThemeData(),
       darkTheme: theme.getDarkThemeData(),
       themeMode: theme.getThemeMode(),
-      //debugShowCheckedModeBanner: ref.read(flavorProvider) == Flavor.prd ? false : true,
-      debugShowCheckedModeBanner: true,
+      debugShowCheckedModeBanner:
+          ref.read(flavorProvider) == Flavor.prd ? false : true,
       home: const TopPage(),
     );
   }
