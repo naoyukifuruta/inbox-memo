@@ -10,12 +10,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.5
-  shared_preferences: ^2.0.15
-  package_info: ^2.0.2
+  shared_preferences: ^2.1.0
+  package_info_plus: ^3.1.0
   flutter_launcher_icons: ^0.11.0
-  intl: ^0.17.0
+  intl: ^0.18.0
   freezed_annotation: ^2.0.3
-  share_plus: ^4.0.3
+  share_plus: ^6.3.2
   flutter_hooks: ^0.18.4
   hooks_riverpod: ^1.0.4
   url_launcher: ^6.1.9
