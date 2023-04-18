@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../providers/app_setting_provider.dart';
+import '../providers/package_info_provider.dart';
 import '../providers/theme_provider.dart';
 
 class SettingPage extends ConsumerWidget {
@@ -23,7 +23,7 @@ class SettingPage extends ConsumerWidget {
               width: 32,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).colorScheme.background,
               ),
             ),
             // タイトル
@@ -38,14 +38,15 @@ class SettingPage extends ConsumerWidget {
             const _DeleteConfirmElement(),
             // ダークモード
             const _DarkModeElement(),
-            const SizedBox(height: 8.0),
-            // アプリについて
-            const _AppInfomationElement(),
+            // 幅調整
+            const SizedBox(height: 12.0),
             // プライバシーポリシー
             const _PrivacyPolicyElement(),
+            // アプリについて
+            const _AppInfomationElement(),
             // キャンセルボタン
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+              padding: const EdgeInsets.fromLTRB(0, 12.0, 0, 0),
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -63,6 +64,7 @@ class SettingPage extends ConsumerWidget {
   }
 }
 
+// 削除確認
 class _DeleteConfirmElement extends HookConsumerWidget {
   const _DeleteConfirmElement({Key? key}) : super(key: key);
 
@@ -91,6 +93,7 @@ class _DeleteConfirmElement extends HookConsumerWidget {
   }
 }
 
+// ダークモード切り替え
 class _DarkModeElement extends HookConsumerWidget {
   const _DarkModeElement({Key? key}) : super(key: key);
 
@@ -119,6 +122,7 @@ class _DarkModeElement extends HookConsumerWidget {
   }
 }
 
+// アプリ情報
 class _AppInfomationElement extends HookConsumerWidget {
   const _AppInfomationElement({Key? key}) : super(key: key);
 
@@ -132,12 +136,12 @@ class _AppInfomationElement extends HookConsumerWidget {
           child: Icon(Icons.info_outline),
         ),
         title: const Text('アプリについて'),
-        onTap: () async {
-          final info = await PackageInfo.fromPlatform();
+        onTap: () {
+          final pkginfo = ref.read(packageInfoProvider);
           showAboutDialog(
             context: context,
-            applicationName: info.appName,
-            applicationVersion: info.version,
+            applicationName: pkginfo.appName,
+            applicationVersion: pkginfo.version,
             applicationLegalese: "2022 ©Naoyuki Furuta",
           );
         },
@@ -146,6 +150,7 @@ class _AppInfomationElement extends HookConsumerWidget {
   }
 }
 
+// プライバシーポリシー
 class _PrivacyPolicyElement extends HookConsumerWidget {
   const _PrivacyPolicyElement({Key? key}) : super(key: key);
 
@@ -156,7 +161,7 @@ class _PrivacyPolicyElement extends HookConsumerWidget {
       child: ListTile(
         leading: const SizedBox(
           height: 40,
-          child: Icon(Icons.info_outline),
+          child: Icon(Icons.account_circle_outlined),
         ),
         title: const Text('プライバシーポリシー'),
         onTap: () async {
@@ -165,7 +170,7 @@ class _PrivacyPolicyElement extends HookConsumerWidget {
           if (await canLaunchUrl(url)) {
             launchUrl(url);
           } else {
-            print("Can't launch $url");
+            debugPrint("Can't launch $url");
           }
         },
       ),
