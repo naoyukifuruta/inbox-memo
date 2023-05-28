@@ -30,8 +30,7 @@ class MyAppTheme with _$MyAppTheme {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       primarySwatch: Colors.blueGrey,
       primaryColor: Colors.blueGrey[300],
-      // ignore: deprecated_member_use
-      accentColor: Colors.blueGrey[300],
+      hintColor: Colors.blueGrey[300],
     );
   }
 }
