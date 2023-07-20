@@ -1,17 +1,26 @@
 name: Flutter CI
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "README.md"
+      - "analysis_options.yaml"
+      - ".gitignore"
+
   pull_request:
     types: [opened, synchronize]
-  push:
-    branches:
-      - master
+
+  workflow_dispatch:
+
+env:
+  flutter_version: "3.10.6"
 
 jobs:
   lint:
     name: flutter analyze
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: set up repository
         uses: actions/checkout@v3
@@ -19,7 +28,7 @@ jobs:
       - name: set up flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.10.6"
+          flutter-version: ${{ env.flutter_version }}
           channel: "stable"
 
       - name: flutter version
@@ -65,7 +74,7 @@ jobs:
       - name: set up flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.10.6"
+          flutter-version: ${{ env.flutter_version }}
           channel: "stable"
 
       - name: flutter version
@@ -88,7 +97,7 @@ jobs:
       - name: set up flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.10.6"
+          flutter-version: ${{ env.flutter_version }}
           channel: "stable"
 
       - name: flutter version
@@ -111,7 +120,7 @@ jobs:
       - name: set up flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.10.6"
+          flutter-version: ${{ env.flutter_version }}
           channel: "stable"
 
       - name: flutter version
@@ -120,8 +129,14 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
 
-      # - name: flutter widget test
-      #   run: flutter test test/widget_test.dart
+      - name: flutter test
+        run: flutter test --machine > test_report.log
 
-      - name: flutter unit test
-        run: flutter test test/unit_test.dart
+      - name: test report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: 'flutter test report'
+          path: 'test_report.log'
+          reporter: 'flutter-json'
+          fail-on-error: 'false'
