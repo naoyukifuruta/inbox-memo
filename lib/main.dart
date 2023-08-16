@@ -13,23 +13,19 @@ import 'providers/shared_preferences_provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  late final SharedPreferences sp;
-  late final PackageInfo pi;
-  await Future.wait([
-    Future(() async => sp = await SharedPreferences.getInstance()),
-    Future(() async => pi = await PackageInfo.fromPlatform()),
-  ]);
-
   const flavor = String.fromEnvironment('flavor');
-  debugPrint(flavor);
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (_) {
+    (_) async {
       runApp(
         ProviderScope(
           overrides: [
-            sharedPreferencesProvider.overrideWithValue(sp),
-            packageInfoProvider.overrideWithValue(pi),
+            sharedPreferencesProvider.overrideWithValue(
+              await SharedPreferences.getInstance(),
+            ),
+            packageInfoProvider.overrideWithValue(
+              await PackageInfo.fromPlatform(),
+            ),
             flavorProvider.overrideWithValue(Flavor.values.byName(flavor)),
           ],
           child: const App(),
