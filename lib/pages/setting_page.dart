@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../extensions/theme_mode_extension.dart';
 import '../providers/app_setting_provider.dart';
 import '../providers/package_info_provider.dart';
 import '../providers/theme_provider.dart';
@@ -65,7 +66,7 @@ class SettingPage extends ConsumerWidget {
 }
 
 // 削除確認
-class _DeleteConfirmElement extends HookConsumerWidget {
+class _DeleteConfirmElement extends ConsumerWidget {
   const _DeleteConfirmElement({Key? key}) : super(key: key);
 
   @override
@@ -94,7 +95,7 @@ class _DeleteConfirmElement extends HookConsumerWidget {
 }
 
 // ダークモード切り替え
-class _DarkModeElement extends HookConsumerWidget {
+class _DarkModeElement extends ConsumerWidget {
   const _DarkModeElement({Key? key}) : super(key: key);
 
   @override
@@ -123,7 +124,7 @@ class _DarkModeElement extends HookConsumerWidget {
 }
 
 // アプリ情報
-class _AppInfomationElement extends HookConsumerWidget {
+class _AppInfomationElement extends ConsumerWidget {
   const _AppInfomationElement({Key? key}) : super(key: key);
 
   @override
@@ -151,11 +152,11 @@ class _AppInfomationElement extends HookConsumerWidget {
 }
 
 // プライバシーポリシー
-class _PrivacyPolicyElement extends HookConsumerWidget {
+class _PrivacyPolicyElement extends StatelessWidget {
   const _PrivacyPolicyElement({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: ListTile(
