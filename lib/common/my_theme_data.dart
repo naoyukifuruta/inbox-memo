@@ -5,6 +5,7 @@ final myLightThemeData = ThemeData(
   visualDensity: VisualDensity.adaptivePlatformDensity,
   primarySwatch: Colors.blueGrey,
   primaryColor: Colors.blueGrey,
+  useMaterial3: false,
 );
 
 final myDarkThemeData = ThemeData(
@@ -13,4 +14,5 @@ final myDarkThemeData = ThemeData(
   primarySwatch: Colors.blueGrey,
   primaryColor: Colors.blueGrey[300],
   hintColor: Colors.blueGrey[300],
+  useMaterial3: false,
 );
