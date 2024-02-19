@@ -33,7 +33,7 @@ class TopPage extends HookConsumerWidget {
   }
 }
 
-class _Body extends ConsumerWidget {
+class _Body extends HookConsumerWidget {
   const _Body({
     Key? key,
     required this.controller,
@@ -46,6 +46,12 @@ class _Body extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.clear();
+      focusNode.requestFocus();
+    });
+
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.all(16.0),
@@ -71,7 +77,7 @@ class _Body extends ConsumerWidget {
             color: theme.isDark ? Colors.white : Colors.black,
             fontSize: 16.0,
           ),
-          autofocus: true,
+          autofocus: false,
           focusNode: focusNode,
           onChanged: (text) {
             ref.read(memoProvider.notifier).save(text);
@@ -88,7 +94,7 @@ class _Body extends ConsumerWidget {
   }
 }
 
-class _FloatingActionButtons extends ConsumerWidget {
+class _FloatingActionButtons extends HookConsumerWidget {
   const _FloatingActionButtons({
     Key? key,
     required this.controller,
@@ -172,7 +178,7 @@ class _ShareButton extends StatelessWidget {
   }
 }
 
-class _DeleteButton extends ConsumerWidget {
+class _DeleteButton extends HookConsumerWidget {
   const _DeleteButton({
     required this.controller,
     required this.focusNode,
