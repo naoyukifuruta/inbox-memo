@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'app_setting.dart';
 
@@ -12,7 +12,7 @@ part of 'app_setting.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$AppSetting {
@@ -27,57 +27,61 @@ mixin _$AppSetting {
 abstract class $AppSettingCopyWith<$Res> {
   factory $AppSettingCopyWith(
           AppSetting value, $Res Function(AppSetting) then) =
-      _$AppSettingCopyWithImpl<$Res>;
+      _$AppSettingCopyWithImpl<$Res, AppSetting>;
+  @useResult
   $Res call({bool isDeleteConfirm});
 }
 
 /// @nodoc
-class _$AppSettingCopyWithImpl<$Res> implements $AppSettingCopyWith<$Res> {
+class _$AppSettingCopyWithImpl<$Res, $Val extends AppSetting>
+    implements $AppSettingCopyWith<$Res> {
   _$AppSettingCopyWithImpl(this._value, this._then);
 
-  final AppSetting _value;
   // ignore: unused_field
-  final $Res Function(AppSetting) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? isDeleteConfirm = freezed,
+    Object? isDeleteConfirm = null,
   }) {
     return _then(_value.copyWith(
-      isDeleteConfirm: isDeleteConfirm == freezed
+      isDeleteConfirm: null == isDeleteConfirm
           ? _value.isDeleteConfirm
           : isDeleteConfirm // ignore: cast_nullable_to_non_nullable
               as bool,
-    ));
+    ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$_AppSettingCopyWith<$Res>
+abstract class _$$AppSettingImplCopyWith<$Res>
     implements $AppSettingCopyWith<$Res> {
-  factory _$$_AppSettingCopyWith(
-          _$_AppSetting value, $Res Function(_$_AppSetting) then) =
-      __$$_AppSettingCopyWithImpl<$Res>;
+  factory _$$AppSettingImplCopyWith(
+          _$AppSettingImpl value, $Res Function(_$AppSettingImpl) then) =
+      __$$AppSettingImplCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({bool isDeleteConfirm});
 }
 
 /// @nodoc
-class __$$_AppSettingCopyWithImpl<$Res> extends _$AppSettingCopyWithImpl<$Res>
-    implements _$$_AppSettingCopyWith<$Res> {
-  __$$_AppSettingCopyWithImpl(
-      _$_AppSetting _value, $Res Function(_$_AppSetting) _then)
-      : super(_value, (v) => _then(v as _$_AppSetting));
+class __$$AppSettingImplCopyWithImpl<$Res>
+    extends _$AppSettingCopyWithImpl<$Res, _$AppSettingImpl>
+    implements _$$AppSettingImplCopyWith<$Res> {
+  __$$AppSettingImplCopyWithImpl(
+      _$AppSettingImpl _value, $Res Function(_$AppSettingImpl) _then)
+      : super(_value, _then);
 
-  @override
-  _$_AppSetting get _value => super._value as _$_AppSetting;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? isDeleteConfirm = freezed,
+    Object? isDeleteConfirm = null,
   }) {
-    return _then(_$_AppSetting(
-      isDeleteConfirm: isDeleteConfirm == freezed
+    return _then(_$AppSettingImpl(
+      isDeleteConfirm: null == isDeleteConfirm
           ? _value.isDeleteConfirm
           : isDeleteConfirm // ignore: cast_nullable_to_non_nullable
               as bool,
@@ -87,8 +91,8 @@ class __$$_AppSettingCopyWithImpl<$Res> extends _$AppSettingCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_AppSetting with DiagnosticableTreeMixin implements _AppSetting {
-  const _$_AppSetting({this.isDeleteConfirm = false});
+class _$AppSettingImpl with DiagnosticableTreeMixin implements _AppSetting {
+  const _$AppSettingImpl({this.isDeleteConfirm = false});
 
   @override
   @JsonKey()
@@ -108,31 +112,31 @@ class _$_AppSetting with DiagnosticableTreeMixin implements _AppSetting {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AppSetting &&
-            const DeepCollectionEquality()
-                .equals(other.isDeleteConfirm, isDeleteConfirm));
+            other is _$AppSettingImpl &&
+            (identical(other.isDeleteConfirm, isDeleteConfirm) ||
+                other.isDeleteConfirm == isDeleteConfirm));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(isDeleteConfirm));
+  int get hashCode => Object.hash(runtimeType, isDeleteConfirm);
 
   @JsonKey(ignore: true)
   @override
-  _$$_AppSettingCopyWith<_$_AppSetting> get copyWith =>
-      __$$_AppSettingCopyWithImpl<_$_AppSetting>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$AppSettingImplCopyWith<_$AppSettingImpl> get copyWith =>
+      __$$AppSettingImplCopyWithImpl<_$AppSettingImpl>(this, _$identity);
 }
 
 abstract class _AppSetting implements AppSetting {
-  const factory _AppSetting({final bool isDeleteConfirm}) = _$_AppSetting;
+  const factory _AppSetting({final bool isDeleteConfirm}) = _$AppSettingImpl;
 
   @override
-  bool get isDeleteConfirm => throw _privateConstructorUsedError;
+  bool get isDeleteConfirm;
   @override
   @JsonKey(ignore: true)
-  _$$_AppSettingCopyWith<_$_AppSetting> get copyWith =>
+  _$$AppSettingImplCopyWith<_$AppSettingImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
