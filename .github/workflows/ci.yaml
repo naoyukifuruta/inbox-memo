@@ -84,7 +84,7 @@ jobs:
         run: flutter pub get
 
       - name: flutter build
-        run: flutter build appbundle --debug --dart-define-from-file=dart_defines/dev.json
+        run: flutter build appbundle --debug --dart-define=FLAVOR=dev
 
   ios:
     name: build ios
@@ -107,7 +107,7 @@ jobs:
         run: flutter pub get
 
       - name: flutter build
-        run: flutter build ios --debug --no-codesign --dart-define-from-file=dart_defines/dev.json
+        run: flutter build ios --debug --no-codesign --dart-define=FLAVOR=dev
 
   test:
     name: flutter test
