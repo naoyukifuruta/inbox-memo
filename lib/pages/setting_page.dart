@@ -24,7 +24,7 @@ class SettingPage extends ConsumerWidget {
               width: 32,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
               ),
             ),
             // タイトル
