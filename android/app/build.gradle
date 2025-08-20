@@ -48,15 +48,16 @@ if (project.hasProperty('dart-defines')) {
 }
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
+    namespace "com.nfrutta.inbox_memo"
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     sourceSets {
@@ -65,8 +66,8 @@ android {
 
     defaultConfig {
         applicationId "com.nfrutta.inbox_memo"
-        minSdkVersion 29
-        targetSdkVersion 34
+        minSdkVersion 35
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -97,10 +98,9 @@ flutter {
     source '../..'
 }
 
-def kotlin_version = "1.8.0"
-
+// Kotlinバージョンはbuild.gradleで定義済みなので、ここでの重複定義を削除
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10"
 }
 
 task copySources(type: Copy) {
