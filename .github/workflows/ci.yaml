@@ -111,7 +111,17 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
 
-      - name: flutter build
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '16.0'
+
+      - name: Show Xcode info
+        run: |
+          xcode-select -p
+          xcodebuild -version
+          xcodebuild -showsdks
+
+      - name: Flutter build (iOS Simulator)
         run: flutter build ios --debug --simulator --dart-define=FLAVOR=dev
 
   test:
