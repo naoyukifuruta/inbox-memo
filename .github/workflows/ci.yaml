@@ -112,7 +112,7 @@ jobs:
         run: flutter pub get
 
       - name: flutter build
-        run: flutter build ios --debug --no-codesign --dart-define=FLAVOR=dev
+        run: flutter build ios --debug --simulator --dart-define=FLAVOR=dev
 
   test:
     name: flutter test
